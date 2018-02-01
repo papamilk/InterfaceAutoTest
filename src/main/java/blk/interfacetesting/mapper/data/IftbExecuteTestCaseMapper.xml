@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.IftbExecuteTestCaseMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.IftbExecuteTestCase" >
+    <id column="ietc_id" property="ietcId" jdbcType="INTEGER" />
+    <result column="iems_id" property="iemsId" jdbcType="INTEGER" />
+    <result column="mtc_id" property="mtcId" jdbcType="INTEGER" />
+    <result column="ietc_status" property="ietcStatus" jdbcType="VARCHAR" />
+    <result column="ietc_createtime" property="ietcCreatetime" jdbcType="VARCHAR" />
+    <result column="ietc_createuser" property="ietcCreateuser" jdbcType="VARCHAR" />
+    <result column="ietc_updatetime" property="ietcUpdatetime" jdbcType="VARCHAR" />
+    <result column="ietc_updateuser" property="ietcUpdateuser" jdbcType="VARCHAR" />
+    <result column="mtc_name" property="mtcName" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getExecuteTestCases" resultMap="BaseResultMap">
+    SELECT
+      etc.ietc_id AS ietcId,
+      etc.iems_id AS iemsId,
+      etc.mtc_id AS mtcId,
+      tc.mtc_name AS mtcName
+    FROM
+      iftb_execute_test_case etc
+    JOIN mstb_test_case tc ON etc.mtc_id = tc.mtc_id
+  </select>
+  <select id="getExecuteTestCaseOne" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT
+      etc.ietc_id AS ietcId,
+      etc.iems_id AS iemsId,
+      etc.mtc_id AS mtcId,
+      tc.mtc_name AS mtcName
+    FROM
+      iftb_execute_test_case etc
+    JOIN mstb_test_case tc ON etc.mtc_id = tc.mtc_id
+    WHERE
+      etc.ietc_id = #{ietcId}
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ietc_id, iems_id, mtc_id, ietc_status, ietc_createtime, ietc_createuser, ietc_updatetime, 
+    ietc_updateuser
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.IftbExecuteTestCaseCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from iftb_execute_test_case
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from iftb_execute_test_case
+    where ietc_id = #{ietcId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from iftb_execute_test_case
+    where ietc_id = #{ietcId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.IftbExecuteTestCaseCriteria" >
+    delete from iftb_execute_test_case
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.data.IftbExecuteTestCase" useGeneratedKeys="true" keyProperty="ietcId">
+    insert into iftb_execute_test_case (ietc_id, iems_id, mtc_id, 
+      ietc_status, ietc_createtime, ietc_createuser, 
+      ietc_updatetime, ietc_updateuser)
+    values (#{ietcId,jdbcType=INTEGER}, #{iemsId,jdbcType=INTEGER}, #{mtcId,jdbcType=INTEGER}, 
+      #{ietcStatus,jdbcType=VARCHAR}, #{ietcCreatetime,jdbcType=VARCHAR}, #{ietcCreateuser,jdbcType=VARCHAR}, 
+      #{ietcUpdatetime,jdbcType=VARCHAR}, #{ietcUpdateuser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.IftbExecuteTestCase" >
+    insert into iftb_execute_test_case
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ietcId != null" >
+        ietc_id,
+      </if>
+      <if test="iemsId != null" >
+        iems_id,
+      </if>
+      <if test="mtcId != null" >
+        mtc_id,
+      </if>
+      <if test="ietcStatus != null" >
+        ietc_status,
+      </if>
+      <if test="ietcCreatetime != null" >
+        ietc_createtime,
+      </if>
+      <if test="ietcCreateuser != null" >
+        ietc_createuser,
+      </if>
+      <if test="ietcUpdatetime != null" >
+        ietc_updatetime,
+      </if>
+      <if test="ietcUpdateuser != null" >
+        ietc_updateuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ietcId != null" >
+        #{ietcId,jdbcType=INTEGER},
+      </if>
+      <if test="iemsId != null" >
+        #{iemsId,jdbcType=INTEGER},
+      </if>
+      <if test="mtcId != null" >
+        #{mtcId,jdbcType=INTEGER},
+      </if>
+      <if test="ietcStatus != null" >
+        #{ietcStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ietcCreatetime != null" >
+        #{ietcCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="ietcCreateuser != null" >
+        #{ietcCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="ietcUpdatetime != null" >
+        #{ietcUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="ietcUpdateuser != null" >
+        #{ietcUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.data.IftbExecuteTestCaseCriteria" resultType="java.lang.Integer" >
+    select count(*) from iftb_execute_test_case
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update iftb_execute_test_case
+    <set >
+      <if test="record.ietcId != null" >
+        ietc_id = #{record.ietcId,jdbcType=INTEGER},
+      </if>
+      <if test="record.iemsId != null" >
+        iems_id = #{record.iemsId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mtcId != null" >
+        mtc_id = #{record.mtcId,jdbcType=INTEGER},
+      </if>
+      <if test="record.ietcStatus != null" >
+        ietc_status = #{record.ietcStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ietcCreatetime != null" >
+        ietc_createtime = #{record.ietcCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ietcCreateuser != null" >
+        ietc_createuser = #{record.ietcCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ietcUpdatetime != null" >
+        ietc_updatetime = #{record.ietcUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ietcUpdateuser != null" >
+        ietc_updateuser = #{record.ietcUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update iftb_execute_test_case
+    set ietc_id = #{record.ietcId,jdbcType=INTEGER},
+      iems_id = #{record.iemsId,jdbcType=INTEGER},
+      mtc_id = #{record.mtcId,jdbcType=INTEGER},
+      ietc_status = #{record.ietcStatus,jdbcType=VARCHAR},
+      ietc_createtime = #{record.ietcCreatetime,jdbcType=VARCHAR},
+      ietc_createuser = #{record.ietcCreateuser,jdbcType=VARCHAR},
+      ietc_updatetime = #{record.ietcUpdatetime,jdbcType=VARCHAR},
+      ietc_updateuser = #{record.ietcUpdateuser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.IftbExecuteTestCase" >
+    update iftb_execute_test_case
+    <set >
+      <if test="iemsId != null" >
+        iems_id = #{iemsId,jdbcType=INTEGER},
+      </if>
+      <if test="mtcId != null" >
+        mtc_id = #{mtcId,jdbcType=INTEGER},
+      </if>
+      <if test="ietcStatus != null" >
+        ietc_status = #{ietcStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ietcCreatetime != null" >
+        ietc_createtime = #{ietcCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="ietcCreateuser != null" >
+        ietc_createuser = #{ietcCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="ietcUpdatetime != null" >
+        ietc_updatetime = #{ietcUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="ietcUpdateuser != null" >
+        ietc_updateuser = #{ietcUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ietc_id = #{ietcId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.IftbExecuteTestCase" >
+    update iftb_execute_test_case
+    set iems_id = #{iemsId,jdbcType=INTEGER},
+      mtc_id = #{mtcId,jdbcType=INTEGER},
+      ietc_status = #{ietcStatus,jdbcType=VARCHAR},
+      ietc_createtime = #{ietcCreatetime,jdbcType=VARCHAR},
+      ietc_createuser = #{ietcCreateuser,jdbcType=VARCHAR},
+      ietc_updatetime = #{ietcUpdatetime,jdbcType=VARCHAR},
+      ietc_updateuser = #{ietcUpdateuser,jdbcType=VARCHAR}
+    where ietc_id = #{ietcId,jdbcType=INTEGER}
+  </update>
+</mapper>

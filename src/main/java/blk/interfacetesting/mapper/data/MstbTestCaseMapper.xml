@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.MstbTestCaseMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.MstbTestCase" >
+    <id column="mtc_id" property="mtcId" jdbcType="INTEGER" />
+    <result column="mp_id" property="mpId" jdbcType="INTEGER" />
+    <result column="stop_time" property="stopTime" jdbcType="INTEGER" />
+    <result column="mtc_number" property="mtcNumber" jdbcType="VARCHAR" />
+    <result column="mtc_name" property="mtcName" jdbcType="VARCHAR" />
+    <result column="mtc_dependency" property="mtcDependency" jdbcType="VARCHAR" />
+    <result column="mtc_type" property="mtcType" jdbcType="INTEGER" />
+    <result column="mtc_status" property="mtcStatus" jdbcType="VARCHAR" />
+    <result column="mtc_createtime" property="mtcCreatetime" jdbcType="VARCHAR" />
+    <result column="mtc_createuser" property="mtcCreateuser" jdbcType="VARCHAR" />
+    <result column="mtc_updatetime" property="mtcUpdatetime" jdbcType="VARCHAR" />
+    <result column="mtc_updateuser" property="mtcUpdateuser" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getTestCase" resultMap="BaseResultMap">
+    SELECT
+        a.mtc_id,
+        mtc_number,
+        mtc_name
+    FROM
+        mstb_test_case a
+    JOIN iftb_execute_test_case b ON a.mtc_id = b.mtc_id
+    WHERE
+        a.mp_id = #{mpId}
+    AND b.iems_id = #{iemId}
+    ORDER BY
+	    a.mtc_id
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    mtc_id, mp_id, stop_time, mtc_number, mtc_name, mtc_dependency, mtc_type, mtc_status,
+    mtc_createtime, mtc_createuser, mtc_updatetime, mtc_updateuser
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.MstbTestCaseCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from mstb_test_case
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from mstb_test_case
+    where mtc_id = #{mtcId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mstb_test_case
+    where mtc_id = #{mtcId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.MstbTestCaseCriteria" >
+    delete from mstb_test_case
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.data.MstbTestCase" useGeneratedKeys="true" keyProperty="mtcId">
+    insert into mstb_test_case (mtc_id, mp_id, stop_time,
+    mtc_number, mtc_name, mtc_dependency,
+    mtc_type, mtc_status, mtc_createtime,
+    mtc_createuser, mtc_updatetime, mtc_updateuser
+    )
+    values (#{mtcId,jdbcType=INTEGER}, #{mpId,jdbcType=INTEGER}, #{stopTime,jdbcType=INTEGER},
+    #{mtcNumber,jdbcType=VARCHAR}, #{mtcName,jdbcType=VARCHAR}, #{mtcDependency,jdbcType=VARCHAR},
+    #{mtcType,jdbcType=INTEGER}, #{mtcStatus,jdbcType=VARCHAR}, #{mtcCreatetime,jdbcType=VARCHAR},
+    #{mtcCreateuser,jdbcType=VARCHAR}, #{mtcUpdatetime,jdbcType=VARCHAR}, #{mtcUpdateuser,jdbcType=VARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.MstbTestCase" useGeneratedKeys="true" keyProperty="mtcId">
+    insert into mstb_test_case
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mtcId != null" >
+        mtc_id,
+      </if>
+      <if test="mpId != null" >
+        mp_id,
+      </if>
+      <if test="stopTime != null" >
+        stop_time,
+      </if>
+      <if test="mtcNumber != null" >
+        mtc_number,
+      </if>
+      <if test="mtcName != null" >
+        mtc_name,
+      </if>
+      <if test="mtcDependency != null" >
+        mtc_dependency,
+      </if>
+      <if test="mtcType != null" >
+        mtc_type,
+      </if>
+      <if test="mtcStatus != null" >
+        mtc_status,
+      </if>
+      <if test="mtcCreatetime != null" >
+        mtc_createtime,
+      </if>
+      <if test="mtcCreateuser != null" >
+        mtc_createuser,
+      </if>
+      <if test="mtcUpdatetime != null" >
+        mtc_updatetime,
+      </if>
+      <if test="mtcUpdateuser != null" >
+        mtc_updateuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mtcId != null" >
+        #{mtcId,jdbcType=INTEGER},
+      </if>
+      <if test="mpId != null" >
+        #{mpId,jdbcType=INTEGER},
+      </if>
+      <if test="stopTime != null" >
+        #{stopTime,jdbcType=INTEGER},
+      </if>
+      <if test="mtcNumber != null" >
+        #{mtcNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcName != null" >
+        #{mtcName,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcDependency != null" >
+        #{mtcDependency,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcType != null" >
+        #{mtcType,jdbcType=INTEGER},
+      </if>
+      <if test="mtcStatus != null" >
+        #{mtcStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcCreatetime != null" >
+        #{mtcCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcCreateuser != null" >
+        #{mtcCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcUpdatetime != null" >
+        #{mtcUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcUpdateuser != null" >
+        #{mtcUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.data.MstbTestCaseCriteria" resultType="java.lang.Integer" >
+    select count(*) from mstb_test_case
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update mstb_test_case
+    <set >
+      <if test="record.mtcId != null" >
+        mtc_id = #{record.mtcId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mpId != null" >
+        mp_id = #{record.mpId,jdbcType=INTEGER},
+      </if>
+      <if test="record.stopTime != null" >
+        stop_time = #{record.stopTime,jdbcType=INTEGER},
+      </if>
+      <if test="record.mtcNumber != null" >
+        mtc_number = #{record.mtcNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mtcName != null" >
+        mtc_name = #{record.mtcName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mtcDependency != null" >
+        mtc_dependency = #{record.mtcDependency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mtcType != null" >
+        mtc_type = #{record.mtcType,jdbcType=INTEGER},
+      </if>
+      <if test="record.mtcStatus != null" >
+        mtc_status = #{record.mtcStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mtcCreatetime != null" >
+        mtc_createtime = #{record.mtcCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mtcCreateuser != null" >
+        mtc_createuser = #{record.mtcCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mtcUpdatetime != null" >
+        mtc_updatetime = #{record.mtcUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mtcUpdateuser != null" >
+        mtc_updateuser = #{record.mtcUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update mstb_test_case
+    set mtc_id = #{record.mtcId,jdbcType=INTEGER},
+    mp_id = #{record.mpId,jdbcType=INTEGER},
+    stop_time = #{record.stopTime,jdbcType=INTEGER},
+    mtc_number = #{record.mtcNumber,jdbcType=VARCHAR},
+    mtc_name = #{record.mtcName,jdbcType=VARCHAR},
+    mtc_dependency = #{record.mtcDependency,jdbcType=VARCHAR},
+    mtc_type = #{record.mtcType,jdbcType=INTEGER},
+    mtc_status = #{record.mtcStatus,jdbcType=VARCHAR},
+    mtc_createtime = #{record.mtcCreatetime,jdbcType=VARCHAR},
+    mtc_createuser = #{record.mtcCreateuser,jdbcType=VARCHAR},
+    mtc_updatetime = #{record.mtcUpdatetime,jdbcType=VARCHAR},
+    mtc_updateuser = #{record.mtcUpdateuser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.MstbTestCase" >
+    update mstb_test_case
+    <set >
+      <if test="mpId != null" >
+        mp_id = #{mpId,jdbcType=INTEGER},
+      </if>
+      <if test="stopTime != null" >
+        stop_time = #{stopTime,jdbcType=INTEGER},
+      </if>
+      <if test="mtcNumber != null" >
+        mtc_number = #{mtcNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcName != null" >
+        mtc_name = #{mtcName,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcDependency != null" >
+        mtc_dependency = #{mtcDependency,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcType != null" >
+        mtc_type = #{mtcType,jdbcType=INTEGER},
+      </if>
+      <if test="mtcStatus != null" >
+        mtc_status = #{mtcStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcCreatetime != null" >
+        mtc_createtime = #{mtcCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcCreateuser != null" >
+        mtc_createuser = #{mtcCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcUpdatetime != null" >
+        mtc_updatetime = #{mtcUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mtcUpdateuser != null" >
+        mtc_updateuser = #{mtcUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mtc_id = #{mtcId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.MstbTestCase" >
+    update mstb_test_case
+    set mp_id = #{mpId,jdbcType=INTEGER},
+      stop_time = #{stopTime,jdbcType=INTEGER},
+      mtc_number = #{mtcNumber,jdbcType=VARCHAR},
+      mtc_name = #{mtcName,jdbcType=VARCHAR},
+      mtc_dependency = #{mtcDependency,jdbcType=VARCHAR},
+      mtc_type = #{mtcType,jdbcType=INTEGER},
+      mtc_status = #{mtcStatus,jdbcType=VARCHAR},
+      mtc_createtime = #{mtcCreatetime,jdbcType=VARCHAR},
+      mtc_createuser = #{mtcCreateuser,jdbcType=VARCHAR},
+      mtc_updatetime = #{mtcUpdatetime,jdbcType=VARCHAR},
+      mtc_updateuser = #{mtcUpdateuser,jdbcType=VARCHAR}
+    where mtc_id = #{mtcId,jdbcType=INTEGER}
+  </update>
+</mapper>

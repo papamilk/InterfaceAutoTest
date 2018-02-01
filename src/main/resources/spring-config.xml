@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <context:annotation-config />
+  <context:component-scan base-package="blk.interfacetesting.service, blk.interfacetesting.dao,
+    blk.interfacetesting.component, blk.common.util"/>
+
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+        p:dataSource-ref="dataSource"
+        p:configLocation="classpath:mybatis-cfg.xml"
+        p:mapperLocations="classpath:blk/interfacetesting/mapper/**/*Mapper.xml" />
+
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+        p:basePackage="blk.interfacetesting.dao" p:sqlSessionFactoryBeanName="sqlSessionFactory" />
+
+  <!-- 引入配置 -->
+  <bean id="configProperties" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer" p:fileEncoding="UTF-8">
+    <property name="locations">
+      <list>
+        <value>
+          classpath:db.properties
+        </value>
+        <value>
+          classpath:system.properties
+        </value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <property name="defaultEncoding" value="utf-8" />
+    <property name="maxUploadSize" value="5000000"/>
+    <property name="maxInMemorySize" value="4096" />
+  </bean>
+
+  <!-- 数据库连接池 -->
+  <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource">
+    <property name="driverClass" value="${jdbc.driver}" />
+    <property name="jdbcUrl" value="${jdbc.url}" />
+    <property name="username" value="${jdbc.username}" />
+    <property name="password" value="${jdbc.password}" />
+    <property name="maxConnectionsPerPartition" value="${jdbc.maxConnectionsPerPartition}" />
+    <property name="minConnectionsPerPartition" value="${jdbc.minConnectionsPerPartition}" />
+    <property name="partitionCount" value="${jdbc.partitionCount}" />
+    <property name="acquireIncrement" value="${jdbc.acquireIncrement}" />
+    <property name="statementsCacheSize" value="${jdbc.statementsCacheSize}" />
+  </bean>
+
+  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" p:dataSource-ref="dataSource"/>
+
+  <!-- 定义事务管理 -->
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+        p:dataSource-ref="dataSource"/>
+
+</beans>

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.MstbProjectMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.MstbProject" >
+    <id column="mp_id" property="mpId" jdbcType="INTEGER" />
+    <result column="mp_name" property="mpName" jdbcType="VARCHAR" />
+    <result column="mp_description" property="mpDescription" jdbcType="VARCHAR" />
+    <result column="mp_url_prefixion" property="mpUrlPrefixion" jdbcType="VARCHAR" />
+    <result column="mp_status" property="mpStatus" jdbcType="VARCHAR" />
+    <result column="mp_createtime" property="mpCreatetime" jdbcType="VARCHAR" />
+    <result column="mp_createuser" property="mpCreateuser" jdbcType="VARCHAR" />
+    <result column="mp_updatetime" property="mpUpdatetime" jdbcType="VARCHAR" />
+    <result column="mp_updateuser" property="mpUpdateuser" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getProject" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+      m.mp_id,
+      m.mp_name,
+      m.mp_description,
+      m.mp_url_prefixion,
+      m.mp_status,
+      m.mp_createtime,
+      m.mp_createuser,
+      m.mp_updatetime,
+      m.mp_updateuser
+    FROM
+      mstb_project m
+    JOIN iftb_execute_main i ON i.mp_id = m.mp_id
+    WHERE
+      i.iem_id = #{iemId}
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    mp_id, mp_name, mp_description, mp_url_prefixion, mp_status, mp_createtime, mp_createuser, 
+    mp_updatetime, mp_updateuser
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.MstbProjectCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from mstb_project
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from mstb_project
+    where mp_id = #{mpId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mstb_project
+    where mp_id = #{mpId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.MstbProjectCriteria" >
+    delete from mstb_project
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.data.MstbProject" useGeneratedKeys="true" keyProperty="mpId">
+    insert into mstb_project (mp_id, mp_name, mp_description, 
+      mp_url_prefixion, mp_status, mp_createtime, 
+      mp_createuser, mp_updatetime, mp_updateuser
+      )
+    values (#{mpId,jdbcType=INTEGER}, #{mpName,jdbcType=VARCHAR}, #{mpDescription,jdbcType=VARCHAR}, 
+      #{mpUrlPrefixion,jdbcType=VARCHAR}, #{mpStatus,jdbcType=VARCHAR}, #{mpCreatetime,jdbcType=VARCHAR}, 
+      #{mpCreateuser,jdbcType=VARCHAR}, #{mpUpdatetime,jdbcType=VARCHAR}, #{mpUpdateuser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.MstbProject" useGeneratedKeys="true" keyProperty="mpId">
+    insert into mstb_project
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mpId != null" >
+        mp_id,
+      </if>
+      <if test="mpName != null" >
+        mp_name,
+      </if>
+      <if test="mpDescription != null" >
+        mp_description,
+      </if>
+      <if test="mpUrlPrefixion != null" >
+        mp_url_prefixion,
+      </if>
+      <if test="mpStatus != null" >
+        mp_status,
+      </if>
+      <if test="mpCreatetime != null" >
+        mp_createtime,
+      </if>
+      <if test="mpCreateuser != null" >
+        mp_createuser,
+      </if>
+      <if test="mpUpdatetime != null" >
+        mp_updatetime,
+      </if>
+      <if test="mpUpdateuser != null" >
+        mp_updateuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mpId != null" >
+        #{mpId,jdbcType=INTEGER},
+      </if>
+      <if test="mpName != null" >
+        #{mpName,jdbcType=VARCHAR},
+      </if>
+      <if test="mpDescription != null" >
+        #{mpDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="mpUrlPrefixion != null" >
+        #{mpUrlPrefixion,jdbcType=VARCHAR},
+      </if>
+      <if test="mpStatus != null" >
+        #{mpStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mpCreatetime != null" >
+        #{mpCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mpCreateuser != null" >
+        #{mpCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="mpUpdatetime != null" >
+        #{mpUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mpUpdateuser != null" >
+        #{mpUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.data.MstbProjectCriteria" resultType="java.lang.Integer" >
+    select count(*) from mstb_project
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update mstb_project
+    <set >
+      <if test="record.mpId != null" >
+        mp_id = #{record.mpId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mpName != null" >
+        mp_name = #{record.mpName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mpDescription != null" >
+        mp_description = #{record.mpDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mpUrlPrefixion != null" >
+        mp_url_prefixion = #{record.mpUrlPrefixion,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mpStatus != null" >
+        mp_status = #{record.mpStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mpCreatetime != null" >
+        mp_createtime = #{record.mpCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mpCreateuser != null" >
+        mp_createuser = #{record.mpCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mpUpdatetime != null" >
+        mp_updatetime = #{record.mpUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mpUpdateuser != null" >
+        mp_updateuser = #{record.mpUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update mstb_project
+    set mp_id = #{record.mpId,jdbcType=INTEGER},
+      mp_name = #{record.mpName,jdbcType=VARCHAR},
+      mp_description = #{record.mpDescription,jdbcType=VARCHAR},
+      mp_url_prefixion = #{record.mpUrlPrefixion,jdbcType=VARCHAR},
+      mp_status = #{record.mpStatus,jdbcType=VARCHAR},
+      mp_createtime = #{record.mpCreatetime,jdbcType=VARCHAR},
+      mp_createuser = #{record.mpCreateuser,jdbcType=VARCHAR},
+      mp_updatetime = #{record.mpUpdatetime,jdbcType=VARCHAR},
+      mp_updateuser = #{record.mpUpdateuser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.MstbProject" >
+    update mstb_project
+    <set >
+      <if test="mpName != null" >
+        mp_name = #{mpName,jdbcType=VARCHAR},
+      </if>
+      <if test="mpDescription != null" >
+        mp_description = #{mpDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="mpUrlPrefixion != null" >
+        mp_url_prefixion = #{mpUrlPrefixion,jdbcType=VARCHAR},
+      </if>
+      <if test="mpStatus != null" >
+        mp_status = #{mpStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mpCreatetime != null" >
+        mp_createtime = #{mpCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mpCreateuser != null" >
+        mp_createuser = #{mpCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="mpUpdatetime != null" >
+        mp_updatetime = #{mpUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mpUpdateuser != null" >
+        mp_updateuser = #{mpUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mp_id = #{mpId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.MstbProject" >
+    update mstb_project
+    set mp_name = #{mpName,jdbcType=VARCHAR},
+      mp_description = #{mpDescription,jdbcType=VARCHAR},
+      mp_url_prefixion = #{mpUrlPrefixion,jdbcType=VARCHAR},
+      mp_status = #{mpStatus,jdbcType=VARCHAR},
+      mp_createtime = #{mpCreatetime,jdbcType=VARCHAR},
+      mp_createuser = #{mpCreateuser,jdbcType=VARCHAR},
+      mp_updatetime = #{mpUpdatetime,jdbcType=VARCHAR},
+      mp_updateuser = #{mpUpdateuser,jdbcType=VARCHAR}
+    where mp_id = #{mpId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.result.TstbResultTestDataMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.result.TstbResultTestData" >
+    <id column="trtd_id" property="trtdId" jdbcType="INTEGER" />
+    <result column="itd_id" property="itdId" jdbcType="INTEGER" />
+    <result column="tru_id" property="truId" jdbcType="INTEGER" />
+    <result column="trtd_name" property="trtdName" jdbcType="VARCHAR" />
+    <result column="trtd_data" property="trtdData" jdbcType="VARCHAR" />
+    <result column="trtd_depend_name" property="trtdDependName" jdbcType="VARCHAR" />
+    <result column="trtd_time" property="trtdTime" jdbcType="VARCHAR" />
+    <result column="trtd_compared_result" property="trtdComparedResult" jdbcType="INTEGER" />
+    <result column="trtd_error_description" property="trtdErrorDescription" jdbcType="VARCHAR" />
+    <result column="trtd_error_detail" property="trtdErrorDetail" jdbcType="VARCHAR" />
+    <result column="trtd_status_code" property="trtdStatusCode" jdbcType="VARCHAR" />
+    <result column="trtd_result" property="trtdResult" jdbcType="INTEGER" />
+    <result column="trtd_sql_execute_result" property="trtdSqlExecuteResult" jdbcType="VARCHAR" />
+    <result column="trtd_sql_expect_result" property="trtdSqlExpectResult" jdbcType="VARCHAR" />
+    <result column="trtd_sql_compared_result" property="trtdSqlComparedResult" jdbcType="INTEGER" />
+    <result column="trtd_status" property="trtdStatus" jdbcType="VARCHAR" />
+    <result column="trtd_createtime" property="trtdCreatetime" jdbcType="VARCHAR" />
+    <result column="trtd_createuser" property="trtdCreateuser" jdbcType="VARCHAR" />
+    <result column="trtd_updatetime" property="trtdUpdatetime" jdbcType="VARCHAR" />
+    <result column="trtd_updateuser" property="trtdUpdateuser" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="blk.interfacetesting.modle.result.TstbResultTestData" extends="BaseResultMap" >
+    <result column="trtd_execute_result" property="trtdExecuteResult" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <select id="generateResultReport" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT DISTINCT
+      a.trtd_name AS "itdNum",
+      a.trtd_data AS "trtdData",
+      a.trtd_depend_name AS "dependName",
+      a.trtd_execute_result AS "executeResult",
+      a.trtd_compared_result AS "comparedResult",
+      a.trtd_sql_execute_result AS "sqlExecuteResult",
+      a.trtd_sql_compared_result AS "sqlResult",
+      a.trtd_time AS "executeTime",
+      a.trtd_status_code AS "statusCode",
+      a.trtd_error_description AS "description",
+      a.trtd_error_detail AS "errorDetail",
+      a.trtd_id AS "rtdId",
+      CASE
+    WHEN a.trtd_result = 0 THEN
+        "成功"
+    WHEN a.trtd_result > 0 THEN
+        "失败"
+    END "result",
+     b.itd_cols AS "itdCols",
+     b.itd_values AS "itdVals",
+     b.itd_sql AS "sql",
+     b.itd_expect_result AS "expectResult",
+     b.itd_sql_expect_result AS "sqlExpectResult",
+     c.mum_url_path AS "url",
+     c.mum_name AS "mumName",
+     d.mtc_name AS "mtcName",
+     d.mtc_number AS "mtcNum"
+    FROM
+      tstb_result_test_data a
+    LEFT JOIN iftb_test_data b ON a.itd_id = b.itd_id
+    LEFT JOIN mstb_url_management c ON b.mum_id = c.mum_id
+    LEFT JOIN mstb_test_case d ON b.mtc_id = d.mtc_id
+    where b.iem_id = #{iemId}
+    ORDER BY
+      b.itd_id
+  </select>
+  <select id="findTotalTestCaseCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+      count(DISTINCT b.ietc_id)
+    FROM
+      iftb_execute_main a
+    JOIN iftb_execute_test_case b ON a.iem_id = b.iems_id
+    WHERE
+      a.iem_id = #{iemId,jdbcType=INTEGER}
+  </select>
+  <select id="findPassededTestCaseCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+      count(DISTINCT b.trtc_id)
+    FROM
+      tstb_result_main a
+    JOIN tstb_result_test_case b on a.trm_id= b.trs_id
+    WHERE
+      b.trtc_result = 0
+    and a.iem_id = #{iemId,jdbcType=INTEGER}
+  </select>
+  <select id="findFailedTestCaseCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+      count(DISTINCT b.trtc_id)
+    FROM
+      tstb_result_main a
+    JOIN tstb_result_test_case b ON a.trm_id = b.trs_id
+    JOIN tstb_result_url c ON b.trtc_id = c.trtc_id
+    JOIN tstb_result_test_data d ON c.tru_id = d.tru_id
+    WHERE
+      d.trtd_result <![CDATA[ <> ]]> 2
+    AND a.iem_id = #{iemId,jdbcType=INTEGER}
+  </select>
+  <select id="findUnexecutedTestCaseCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+      count(DISTINCT b.mtc_id)
+    FROM
+      tstb_result_main a
+    JOIN tstb_result_test_case b ON a.trm_id = b.trs_id
+    JOIN tstb_result_url c ON b.trtc_id = c.trtc_id
+    JOIN tstb_result_test_data d ON c.tru_id = d.tru_id
+    WHERE
+      d.trtd_result = 2
+    AND a.iem_id = #{iemId,jdbcType=INTEGER}
+  </select>
+  <select id="findUnexecutedTestData" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT DISTINCT
+      a.itd_id AS "itdId",
+      a.itd_name AS "itdName",
+      b.trtd_name
+    FROM
+      iftb_test_data a
+    LEFT JOIN tstb_result_test_data b ON a.itd_id = b.itd_id
+    WHERE
+      a.iem_id = #{iemId}
+    AND b.trtd_name IS NULL
+    ORDER BY
+      a.itd_id
+  </select>
+  <select id="findTotalTestDataCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+      count(*)
+    FROM
+      iftb_test_data
+    WHERE
+      iem_id = #{iemId}
+  </select>
+  <select id="findExecutedDataCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+      count(a.itd_id)
+    FROM
+      tstb_result_test_data a
+    LEFT JOIN iftb_test_data b ON a.itd_id = b.itd_id
+    WHERE
+      b.iem_id = #{iemId}
+  </select>
+  <select id="findPassedTestDataCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+      count(DISTINCT a.itd_id)
+    FROM
+      tstb_result_test_data a
+    LEFT JOIN iftb_test_data b ON a.itd_id = b.itd_id
+    WHERE
+      a.trtd_result = 0
+    AND b.iem_id = #{iemId}
+  </select>
+  <select id="findFailedTestDataCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT
+      count(DISTINCT a.itd_id)
+    FROM
+      tstb_result_test_data a
+    LEFT JOIN iftb_test_data b ON a.itd_id = b.itd_id
+    WHERE
+      a.trtd_result <![CDATA[ <> ]]> 0
+    AND b.iem_id = #{iemId}
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    trtd_id, itd_id, tru_id, trtd_name, trtd_data, trtd_depend_name, trtd_time, trtd_compared_result,
+    trtd_error_description, trtd_error_detail,
+    trtd_status_code, trtd_result, trtd_sql_execute_result, trtd_sql_expect_result, trtd_sql_compared_result,
+    trtd_status, trtd_createtime, trtd_createuser, trtd_updatetime, trtd_updateuser
+  </sql>
+  <sql id="Blob_Column_List" >
+    trtd_execute_result
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="blk.interfacetesting.modle.result.TstbResultTestDataCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tstb_result_test_data
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.result.TstbResultTestDataCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tstb_result_test_data
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tstb_result_test_data
+    where trtd_id = #{trtdId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tstb_result_test_data
+    where trtd_id = #{trtdId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.result.TstbResultTestDataCriteria" >
+    delete from tstb_result_test_data
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.result.TstbResultTestData" useGeneratedKeys="true" keyProperty="trtdId">
+    insert into tstb_result_test_data (trtd_id, itd_id, tru_id,
+    trtd_name, trtd_data, trtd_depend_name, trtd_time, trtd_compared_result,
+    trtd_error_description, trtd_error_detail, trtd_status_code, trtd_result,
+    trtd_sql_execute_result, trtd_sql_expect_result,
+    trtd_sql_compared_result, trtd_status, trtd_createtime,
+    trtd_createuser, trtd_updatetime, trtd_updateuser,
+    trtd_execute_result)
+    values (#{trtdId,jdbcType=INTEGER}, #{itdId,jdbcType=INTEGER}, #{truId,jdbcType=INTEGER},
+    #{trtdName,jdbcType=VARCHAR}, #{trtdData,jdbcType=VARCHAR}, #{trtdDependName,jdbcType=VARCHAR},
+    #{trtdTime,jdbcType=VARCHAR}, #{trtdComparedResult,jdbcType=INTEGER},
+    #{trtdErrorDescription,jdbcType=VARCHAR}, #{trtdErrorDetail,jdbcType=VARCHAR}, #{trtdStatusCode,jdbcType=VARCHAR},
+    #{trtdResult,jdbcType=INTEGER},#{trtdSqlExecuteResult,jdbcType=VARCHAR}, #{trtdSqlExpectResult,jdbcType=VARCHAR},
+    #{trtdSqlComparedResult,jdbcType=INTEGER}, #{trtdStatus,jdbcType=VARCHAR}, #{trtdCreatetime,jdbcType=VARCHAR},
+    #{trtdCreateuser,jdbcType=VARCHAR}, #{trtdUpdatetime,jdbcType=VARCHAR}, #{trtdUpdateuser,jdbcType=VARCHAR},
+    #{trtdExecuteResult,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.result.TstbResultTestData" >
+    insert into tstb_result_test_data
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="trtdId != null" >
+        trtd_id,
+      </if>
+      <if test="itdId != null" >
+        itd_id,
+      </if>
+      <if test="truId != null" >
+        tru_id,
+      </if>
+      <if test="trtdName != null" >
+        trtd_name,
+      </if>
+      <if test="trtdData != null" >
+        trtdData,
+      </if>
+      <if test="trtdDependName != null" >
+        trtdDependName,
+      </if>
+      <if test="trtdTime != null" >
+        trtd_time,
+      </if>
+      <if test="trtdComparedResult != null" >
+        trtd_compared_result,
+      </if>
+      <if test="trtdErrorDescription != null" >
+        trtd_error_description,
+      </if>
+      <if test="trtdErrorDetail != null" >
+        trtdErrorDetail,
+      </if>
+      <if test="trtdStatusCode != null" >
+        trtd_status_code,
+      </if>
+      <if test="trtdResult != null" >
+        trtd_result,
+      </if>
+      <if test="trtdSqlExecuteResult != null" >
+        trtd_sql_execute_result,
+      </if>
+      <if test="trtdSqlExpectResult != null" >
+        trtd_sql_expect_result,
+      </if>
+      <if test="trtdSqlComparedResult != null" >
+        trtd_sql_compared_result,
+      </if>
+      <if test="trtdStatus != null" >
+        trtd_status,
+      </if>
+      <if test="trtdCreatetime != null" >
+        trtd_createtime,
+      </if>
+      <if test="trtdCreateuser != null" >
+        trtd_createuser,
+      </if>
+      <if test="trtdUpdatetime != null" >
+        trtd_updatetime,
+      </if>
+      <if test="trtdUpdateuser != null" >
+        trtd_updateuser,
+      </if>
+      <if test="trtdExecuteResult != null" >
+        trtd_execute_result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="trtdId != null" >
+        #{trtdId,jdbcType=INTEGER},
+      </if>
+      <if test="itdId != null" >
+        #{itdId,jdbcType=INTEGER},
+      </if>
+      <if test="truId != null" >
+        #{truId,jdbcType=INTEGER},
+      </if>
+      <if test="trtdName != null" >
+        #{trtdName,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdData != null" >
+        #{trtdData,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdDependName != null" >
+        #{trtdDependName,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdTime != null" >
+        #{trtdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdComparedResult != null" >
+        #{trtdComparedResult,jdbcType=INTEGER},
+      </if>
+      <if test="trtdErrorDescription != null" >
+        #{trtdErrorDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdErrorDetail != null" >
+        #{trtdErrorDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdStatusCode != null" >
+        #{trtdStatusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdResult != null" >
+        #{trtdResult,jdbcType=INTEGER},
+      </if>
+      <if test="trtdSqlExecuteResult != null" >
+        #{trtdSqlExecuteResult,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdSqlExpectResult != null" >
+        #{trtdSqlExpectResult,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdSqlComparedResult != null" >
+        #{trtdSqlComparedResult,jdbcType=INTEGER},
+      </if>
+      <if test="trtdStatus != null" >
+        #{trtdStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdCreatetime != null" >
+        #{trtdCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdCreateuser != null" >
+        #{trtdCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdUpdatetime != null" >
+        #{trtdUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdUpdateuser != null" >
+        #{trtdUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdExecuteResult != null" >
+        #{trtdExecuteResult,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.result.TstbResultTestDataCriteria" resultType="java.lang.Integer" >
+    select count(*) from tstb_result_test_data
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update tstb_result_test_data
+    <set >
+      <if test="record.trtdId != null" >
+        trtd_id = #{record.trtdId,jdbcType=INTEGER},
+      </if>
+      <if test="record.itdId != null" >
+        itd_id = #{record.itdId,jdbcType=INTEGER},
+      </if>
+      <if test="record.truId != null" >
+        tru_id = #{record.truId,jdbcType=INTEGER},
+      </if>
+      <if test="record.trtdName != null" >
+        trtd_name = #{record.trtdName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdData != null" >
+        trtd_data = #{record.trtdData,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdDependName != null" >
+        trtd_depend_name = #{record.trtdDependName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdTime != null" >
+        trtd_time = #{record.trtdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdComparedResult != null" >
+        trtd_compared_result = #{record.trtdComparedResult,jdbcType=INTEGER},
+      </if>
+      <if test="record.trtdErrorDescription != null" >
+        trtd_error_description = #{record.trtdErrorDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdErrorDetail != null" >
+        trtd_error_detail = #{record.trtdErrorDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdStatusCode != null" >
+        trtd_status_code = #{record.trtdStatusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdResult != null" >
+        trtd_result = #{record.trtdResult,jdbcType=INTEGER},
+      </if>
+      <if test="record.trtdSqlExecuteResult != null" >
+        trtd_sql_execute_result = #{record.trtdSqlExecuteResult,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdSqlExpectResult != null" >
+        trtd_sql_expect_result = #{record.trtdSqlExpectResult,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdSqlComparedResult != null" >
+        trtd_sql_compared_result = #{record.trtdSqlComparedResult,jdbcType=INTEGER},
+      </if>
+      <if test="record.trtdStatus != null" >
+        trtd_status = #{record.trtdStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdCreatetime != null" >
+        trtd_createtime = #{record.trtdCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdCreateuser != null" >
+        trtd_createuser = #{record.trtdCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdUpdatetime != null" >
+        trtd_updatetime = #{record.trtdUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdUpdateuser != null" >
+        trtd_updateuser = #{record.trtdUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trtdExecuteResult != null" >
+        trtd_execute_result = #{record.trtdExecuteResult,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update tstb_result_test_data
+    set trtd_id = #{record.trtdId,jdbcType=INTEGER},
+    itd_id = #{record.itdId,jdbcType=INTEGER},
+    tru_id = #{record.truId,jdbcType=INTEGER},
+    trtd_name = #{record.trtdName,jdbcType=VARCHAR},
+    trtd_data = #{record.trtdData,jdbcType=VARCHAR},
+    trtd_depend_name = #{record.trtdDependName,jdbcType=VARCHAR},
+    trtd_time = #{record.trtdTime,jdbcType=VARCHAR},
+    trtd_compared_result = #{record.trtdComparedResult,jdbcType=INTEGER},
+    trtd_error_description = #{record.trtdErrorDescription,jdbcType=VARCHAR},
+    trtd_error_detail = #{record.trtdErrorDetail,jdbcType=VARCHAR},
+    trtd_status_code = #{record.trtdStatusCode,jdbcType=VARCHAR},
+    trtd_result = #{record.trtdResult,jdbcType=INTEGER},
+    trtd_sql_execute_result = #{record.trtdSqlExecuteResult,jdbcType=VARCHAR},
+    trtd_sql_expect_result = #{record.trtdSqlExpectResult,jdbcType=VARCHAR},
+    trtd_sql_compared_result = #{record.trtdSqlComparedResult,jdbcType=INTEGER},
+    trtd_status = #{record.trtdStatus,jdbcType=VARCHAR},
+    trtd_createtime = #{record.trtdCreatetime,jdbcType=VARCHAR},
+    trtd_createuser = #{record.trtdCreateuser,jdbcType=VARCHAR},
+    trtd_updatetime = #{record.trtdUpdatetime,jdbcType=VARCHAR},
+    trtd_updateuser = #{record.trtdUpdateuser,jdbcType=VARCHAR},
+    trtd_execute_result = #{record.trtdExecuteResult,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update tstb_result_test_data
+    set trtd_id = #{record.trtdId,jdbcType=INTEGER},
+    itd_id = #{record.itdId,jdbcType=INTEGER},
+    tru_id = #{record.truId,jdbcType=INTEGER},
+    trtd_name = #{record.trtdName,jdbcType=VARCHAR},
+    trtd_data = #{record.trtdData,jdbcType=VARCHAR},
+    trtd_depend_name = #{record.trtdDependName,jdbcType=VARCHAR},
+    trtd_time = #{record.trtdTime,jdbcType=VARCHAR},
+    trtd_compared_result = #{record.trtdComparedResult,jdbcType=INTEGER},
+    trtd_error_description = #{record.trtdErrorDescription,jdbcType=VARCHAR},
+    trtd_error_detail = #{record.trtdErrorDetail,jdbcType=VARCHAR},
+    trtd_status_code = #{record.trtdStatusCode,jdbcType=VARCHAR},
+    trtd_result = #{record.trtdResult,jdbcType=INTEGER},
+    trtd_sql_execute_result = #{record.trtdSqlExecuteResult,jdbcType=VARCHAR},
+    trtd_sql_expect_result = #{record.trtdSqlExpectResult,jdbcType=VARCHAR},
+    trtd_sql_compared_result = #{record.trtdSqlComparedResult,jdbcType=INTEGER},
+    trtd_status = #{record.trtdStatus,jdbcType=VARCHAR},
+    trtd_createtime = #{record.trtdCreatetime,jdbcType=VARCHAR},
+    trtd_createuser = #{record.trtdCreateuser,jdbcType=VARCHAR},
+    trtd_updatetime = #{record.trtdUpdatetime,jdbcType=VARCHAR},
+    trtd_updateuser = #{record.trtdUpdateuser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.result.TstbResultTestData" >
+    update tstb_result_test_data
+    <set >
+      <if test="itdId != null" >
+        itd_id = #{itdId,jdbcType=INTEGER},
+      </if>
+      <if test="truId != null" >
+        tru_id = #{truId,jdbcType=INTEGER},
+      </if>
+      <if test="trtdName != null" >
+        trtd_name = #{trtdName,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdData != null" >
+        trtd_data = #{trtdData,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdDependName != null" >
+        trtd_depend_name = #{trtdDependName,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdTime != null" >
+        trtd_time = #{trtdTime,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdComparedResult != null" >
+        trtd_compared_result = #{trtdComparedResult,jdbcType=INTEGER},
+      </if>
+      <if test="trtdErrorDescription != null" >
+        trtd_error_description = #{trtdErrorDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdErrorDescription != null" >
+        trtd_error_detail = #{trtdErrorDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdStatusCode != null" >
+        trtd_status_code = #{trtdStatusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdResult != null" >
+        trtd_result = #{trtdResult,jdbcType=INTEGER},
+      </if>
+      <if test="trtdSqlExecuteResult != null" >
+        trtd_sql_execute_result = #{trtdSqlExecuteResult,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdSqlExpectResult != null" >
+        trtd_sql_expect_result = #{trtdSqlExpectResult,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdSqlComparedResult != null" >
+        trtd_sql_compared_result = #{trtdSqlComparedResult,jdbcType=INTEGER},
+      </if>
+      <if test="trtdStatus != null" >
+        trtd_status = #{trtdStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdCreatetime != null" >
+        trtd_createtime = #{trtdCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdCreateuser != null" >
+        trtd_createuser = #{trtdCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdUpdatetime != null" >
+        trtd_updatetime = #{trtdUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdUpdateuser != null" >
+        trtd_updateuser = #{trtdUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="trtdExecuteResult != null" >
+        trtd_execute_result = #{trtdExecuteResult,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where trtd_id = #{trtdId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="blk.interfacetesting.modle.result.TstbResultTestData" >
+    update tstb_result_test_data
+    set itd_id = #{itdId,jdbcType=INTEGER},
+    tru_id = #{truId,jdbcType=INTEGER},
+    trtd_name = #{trtdName,jdbcType=VARCHAR},
+    trtd_data = #{trtdData,jdbcType=VARCHAR},
+    trtd_depend_name = #{trtdDependName,jdbcType=VARCHAR},
+    trtd_time = #{trtdTime,jdbcType=VARCHAR},
+    trtd_compared_result = #{trtdComparedResult,jdbcType=INTEGER},
+    trtd_error_description = #{trtdErrorDescription,jdbcType=VARCHAR},
+    trtd_error_detail = #{trtdErrorDetail,jdbcType=VARCHAR},
+    trtd_status_code = #{trtdStatusCode,jdbcType=VARCHAR},
+    trtd_result = #{trtdResult,jdbcType=INTEGER},
+    trtd_sql_execute_result = #{trtdSqlExecuteResult,jdbcType=VARCHAR},
+    trtd_sql_expect_result = #{trtdSqlExpectResult,jdbcType=VARCHAR},
+    trtd_sql_compared_result = #{trtdSqlComparedResult,jdbcType=INTEGER},
+    trtd_status = #{trtdStatus,jdbcType=VARCHAR},
+    trtd_createtime = #{trtdCreatetime,jdbcType=VARCHAR},
+    trtd_createuser = #{trtdCreateuser,jdbcType=VARCHAR},
+    trtd_updatetime = #{trtdUpdatetime,jdbcType=VARCHAR},
+    trtd_updateuser = #{trtdUpdateuser,jdbcType=VARCHAR},
+    trtd_execute_result = #{trtdExecuteResult,jdbcType=LONGVARCHAR}
+    where trtd_id = #{trtdId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.result.TstbResultTestData" >
+    update tstb_result_test_data
+    set itd_id = #{itdId,jdbcType=INTEGER},
+      tru_id = #{truId,jdbcType=INTEGER},
+      trtd_name = #{trtdName,jdbcType=VARCHAR},
+      trtd_data = #{trtdData,jdbcType=VARCHAR},
+      trtd_depend_name = #{trtdDependName,jdbcType=VARCHAR},
+      trtd_time = #{trtdTime,jdbcType=VARCHAR},
+      trtd_compared_result = #{trtdComparedResult,jdbcType=INTEGER},
+      trtd_error_description = #{trtdErrorDescription,jdbcType=VARCHAR},
+      trtd_error_detail = #{trtdErrorDetail,jdbcType=VARCHAR},
+      trtd_status_code = #{trtdStatusCode,jdbcType=VARCHAR},
+      trtd_result = #{trtdResult,jdbcType=INTEGER},
+      trtd_sql_execute_result = #{trtdSqlExecuteResult,jdbcType=VARCHAR},
+      trtd_sql_expect_result = #{trtdSqlExpectResult,jdbcType=VARCHAR},
+      trtd_sql_compared_result = #{trtdSqlComparedResult,jdbcType=INTEGER},
+      trtd_status = #{trtdStatus,jdbcType=VARCHAR},
+      trtd_createtime = #{trtdCreatetime,jdbcType=VARCHAR},
+      trtd_createuser = #{trtdCreateuser,jdbcType=VARCHAR},
+      trtd_updatetime = #{trtdUpdatetime,jdbcType=VARCHAR},
+      trtd_updateuser = #{trtdUpdateuser,jdbcType=VARCHAR}
+    where trtd_id = #{trtdId,jdbcType=INTEGER}
+  </update>
+</mapper>

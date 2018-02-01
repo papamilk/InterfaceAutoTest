@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.IftbExecuteMainMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.IftbExecuteMain" >
+    <id column="iem_id" property="iemId" jdbcType="INTEGER" />
+    <result column="mp_id" property="mpId" jdbcType="INTEGER" />
+    <result column="url_prefix" property="urlPrefix" jdbcType="VARCHAR" />
+    <result column="c_system" property="cSystem" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="code_version" property="codeVersion" jdbcType="VARCHAR" />
+    <result column="iem_name" property="iemName" jdbcType="VARCHAR" />
+    <result column="iem_type" property="iemType" jdbcType="VARCHAR" />
+    <result column="iem_code" property="iemCode" jdbcType="VARCHAR" />
+    <result column="iem_status" property="iemStatus" jdbcType="INTEGER" />
+    <result column="iem_createtime" property="iemCreatetime" jdbcType="VARCHAR" />
+    <result column="iem_createuser" property="iemCreateuser" jdbcType="VARCHAR" />
+    <result column="iem_updatetime" property="iemUpdatetime" jdbcType="VARCHAR" />
+    <result column="iem_updateuser" property="iemUpdateuser" jdbcType="VARCHAR" />
+    <result column="mp_name" property="mpName" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteAll" parameterType="java.lang.Integer">
+    DELETE a.*, b.*, c.*, d.*, e.*, f.*
+    FROM
+        iftb_execute_main a
+    LEFT JOIN iftb_execute_test_case b ON a.iem_id = b.iems_id
+    LEFT JOIN mstb_test_case c ON b.mtc_id = c.mtc_id
+    LEFT JOIN iftb_url_test_case d ON c.mtc_id = d.mtc_id
+    LEFT JOIN iftb_test_data e ON c.mtc_id = e.mtc_id
+    LEFT JOIN iftb_test_data_dependency f ON e.itd_id = f.itd_id
+    WHERE
+        a.iem_id = #{iemId};
+
+    DELETE a.*, b.*
+    FROM
+        mstb_url_management a
+    LEFT JOIN mstb_url_parameters b ON a.mum_id = b.mum_id
+    WHERE
+        a.iem_id = #{iemId};
+
+    DELETE
+    FROM
+        mstb_dynamic_param
+    WHERE
+      iem_id = #{iemId};
+  </delete>
+  <select id="getExecuteList" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    SELECT
+      a.iem_id AS "iemId",
+      a.iem_name AS "iemName",
+      a.iem_code As "iemCode",
+      d.mtc_id AS "mtcId",
+      d.mtc_name AS "mtcName",
+      d.mtc_type AS mtcType
+    FROM
+      iftb_execute_main a
+    JOIN iftb_execute_test_case c ON a.iem_id = c.iems_id
+    JOIN mstb_test_case d ON c.mtc_id = d.mtc_id
+    WHERE
+      a.iem_id = #{iemId}
+  </select>
+  <select id="getExecutes" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.IftbExecuteMainCriteria">
+    SELECT
+      i.iem_id AS "iemId",
+      i.mp_id As "mpId",
+      m.mp_name As "mpName",
+      i.iem_name AS "iemName",
+      i.iem_code As "iemCode"
+    FROM
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+      iftb_execute_main i
+    JOIN mstb_project m ON i.mp_id = m.mp_id
+  </select>
+  <select id="getExecuteOne" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT
+      i.iem_id AS "iemId",
+      i.mp_id As "mpId",
+      m.mp_name As "mpName",
+      i.iem_name AS "iemName",
+      i.iem_code As "iemCode"
+    FROM
+    iftb_execute_main i
+    JOIN mstb_project m ON i.mp_id = m.mp_id
+    WHERE
+      i.iem_id = #{iemId}
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    iem_id, mp_id, url_prefix, c_system, description, code_version, iem_name, iem_type,
+    iem_code, iem_status, iem_createtime, iem_createuser, iem_updatetime, iem_updateuser
+  </sql>
+  <!-- search for mpName -->
+  <sql id="mpName_column">
+    i.iem_id, i.mp_id, i.url_prefix, i.c_system, i.description, i.code_version, i.iem_name, i.iem_type, i.iem_code,
+    i.iem_status, i.iem_createtime, i.iem_createuser, i.iem_updatetime, i.iem_updateuser, m.mp_name
+  </sql>
+  <sql id="mpName_table">
+    i LEFT JOIN mstb_project m ON i.mp_id = m.mp_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.IftbExecuteMainCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <choose>
+      <when test="addMpName">
+        <include refid="mpName_column"/>
+        from iftb_execute_main
+        <include refid="mpName_table"/>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+        from iftb_execute_main
+      </otherwise>
+    </choose>
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from iftb_execute_main
+    where iem_id = #{iemId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from iftb_execute_main
+    where iem_id = #{iemId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.IftbExecuteMainCriteria" >
+    delete from iftb_execute_main
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.data.IftbExecuteMain" useGeneratedKeys="true" keyProperty="iemId">
+    insert into iftb_execute_main (iem_id, mp_id, url_prefix,
+    c_system, description, code_version,
+    iem_name, iem_type, iem_code,
+    iem_status, iem_createtime, iem_createuser,
+    iem_updatetime, iem_updateuser)
+    values (#{iemId,jdbcType=INTEGER}, #{mpId,jdbcType=INTEGER}, #{urlPrefix,jdbcType=VARCHAR},
+    #{cSystem,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{codeVersion,jdbcType=VARCHAR},
+    #{iemName,jdbcType=VARCHAR}, #{iemType,jdbcType=VARCHAR}, #{iemCode,jdbcType=VARCHAR},
+    #{iemStatus,jdbcType=INTEGER}, #{iemCreatetime,jdbcType=VARCHAR}, #{iemCreateuser,jdbcType=VARCHAR},
+    #{iemUpdatetime,jdbcType=VARCHAR}, #{iemUpdateuser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.IftbExecuteMain" useGeneratedKeys="true" keyProperty="iemId">
+    insert into iftb_execute_main
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="iemId != null" >
+        iem_id,
+      </if>
+      <if test="mpId != null" >
+        mp_id,
+      </if>
+      <if test="urlPrefix != null" >
+        url_prefix,
+      </if>
+      <if test="cSystem != null" >
+        c_system,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="codeVersion != null" >
+        code_version,
+      </if>
+      <if test="iemName != null" >
+        iem_name,
+      </if>
+      <if test="iemType != null" >
+        iem_type,
+      </if>
+      <if test="iemCode != null" >
+        iem_code,
+      </if>
+      <if test="iemStatus != null" >
+        iem_status,
+      </if>
+      <if test="iemCreatetime != null" >
+        iem_createtime,
+      </if>
+      <if test="iemCreateuser != null" >
+        iem_createuser,
+      </if>
+      <if test="iemUpdatetime != null" >
+        iem_updatetime,
+      </if>
+      <if test="iemUpdateuser != null" >
+        iem_updateuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="iemId != null" >
+        #{iemId,jdbcType=INTEGER},
+      </if>
+      <if test="mpId != null" >
+        #{mpId,jdbcType=INTEGER},
+      </if>
+      <if test="urlPrefix != null" >
+        #{urlPrefix,jdbcType=VARCHAR},
+      </if>
+      <if test="cSystem != null" >
+        #{cSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="codeVersion != null" >
+        #{codeVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="iemName != null" >
+        #{iemName,jdbcType=VARCHAR},
+      </if>
+      <if test="iemType != null" >
+        #{iemType,jdbcType=VARCHAR},
+      </if>
+      <if test="iemCode != null" >
+        #{iemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="iemStatus != null" >
+        #{iemStatus,jdbcType=INTEGER},
+      </if>
+      <if test="iemCreatetime != null" >
+        #{iemCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="iemCreateuser != null" >
+        #{iemCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="iemUpdatetime != null" >
+        #{iemUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="iemUpdateuser != null" >
+        #{iemUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.data.IftbExecuteMainCriteria" resultType="java.lang.Integer" >
+    select count(*) from iftb_execute_main
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update iftb_execute_main
+    <set >
+      <if test="record.iemId != null" >
+        iem_id = #{record.iemId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mpId != null" >
+        mp_id = #{record.mpId,jdbcType=INTEGER},
+      </if>
+      <if test="record.urlPrefix != null" >
+        url_prefix = #{record.urlPrefix,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cSystem != null" >
+        c_system = #{record.cSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null" >
+        description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.codeVersion != null" >
+        code_version = #{record.codeVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iemName != null" >
+        iem_name = #{record.iemName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iemType != null" >
+        iem_type = #{record.iemType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iemCode != null" >
+        iem_code = #{record.iemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iemStatus != null" >
+        iem_status = #{record.iemStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.iemCreatetime != null" >
+        iem_createtime = #{record.iemCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iemCreateuser != null" >
+        iem_createuser = #{record.iemCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iemUpdatetime != null" >
+        iem_updatetime = #{record.iemUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iemUpdateuser != null" >
+        iem_updateuser = #{record.iemUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update iftb_execute_main
+    set iem_id = #{record.iemId,jdbcType=INTEGER},
+    mp_id = #{record.mpId,jdbcType=INTEGER},
+    url_prefix = #{record.urlPrefix,jdbcType=VARCHAR},
+    c_system = #{record.cSystem,jdbcType=VARCHAR},
+    description = #{record.description,jdbcType=VARCHAR},
+    code_version = #{record.codeVersion,jdbcType=VARCHAR},
+    iem_name = #{record.iemName,jdbcType=VARCHAR},
+    iem_type = #{record.iemType,jdbcType=VARCHAR},
+    iem_code = #{record.iemCode,jdbcType=VARCHAR},
+    iem_status = #{record.iemStatus,jdbcType=INTEGER},
+    iem_createtime = #{record.iemCreatetime,jdbcType=VARCHAR},
+    iem_createuser = #{record.iemCreateuser,jdbcType=VARCHAR},
+    iem_updatetime = #{record.iemUpdatetime,jdbcType=VARCHAR},
+    iem_updateuser = #{record.iemUpdateuser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.IftbExecuteMain" >
+    update iftb_execute_main
+    <set >
+      <if test="mpId != null" >
+        mp_id = #{mpId,jdbcType=INTEGER},
+      </if>
+      <if test="urlPrefix != null" >
+        url_prefix = #{urlPrefix,jdbcType=VARCHAR},
+      </if>
+      <if test="cSystem != null" >
+        c_system = #{cSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="codeVersion != null" >
+        code_version = #{codeVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="iemName != null" >
+        iem_name = #{iemName,jdbcType=VARCHAR},
+      </if>
+      <if test="iemType != null" >
+        iem_type = #{iemType,jdbcType=VARCHAR},
+      </if>
+      <if test="iemCode != null" >
+        iem_code = #{iemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="iemStatus != null" >
+        iem_status = #{iemStatus,jdbcType=INTEGER},
+      </if>
+      <if test="iemCreatetime != null" >
+        iem_createtime = #{iemCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="iemCreateuser != null" >
+        iem_createuser = #{iemCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="iemUpdatetime != null" >
+        iem_updatetime = #{iemUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="iemUpdateuser != null" >
+        iem_updateuser = #{iemUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where iem_id = #{iemId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.IftbExecuteMain" >
+    update iftb_execute_main
+    set mp_id = #{mpId,jdbcType=INTEGER},
+      url_prefix = #{urlPrefix,jdbcType=VARCHAR},
+      c_system = #{cSystem,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      code_version = #{codeVersion,jdbcType=VARCHAR},
+      iem_name = #{iemName,jdbcType=VARCHAR},
+      iem_type = #{iemType,jdbcType=VARCHAR},
+      iem_code = #{iemCode,jdbcType=VARCHAR},
+      iem_status = #{iemStatus,jdbcType=INTEGER},
+      iem_createtime = #{iemCreatetime,jdbcType=VARCHAR},
+      iem_createuser = #{iemCreateuser,jdbcType=VARCHAR},
+      iem_updatetime = #{iemUpdatetime,jdbcType=VARCHAR},
+      iem_updateuser = #{iemUpdateuser,jdbcType=VARCHAR}
+    where iem_id = #{iemId,jdbcType=INTEGER}
+  </update>
+</mapper>

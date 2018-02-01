@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.MstbURLManagementMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.MstbURLManagement" >
+    <id column="mum_id" property="mumId" jdbcType="INTEGER" />
+    <result column="mp_id" property="mpId" jdbcType="INTEGER" />
+    <result column="iem_id" property="iemId" jdbcType="INTEGER" />
+    <result column="mtc_id" property="mtcId" jdbcType="INTEGER" />
+    <result column="mum_number" property="mumNumber" jdbcType="VARCHAR" />
+    <result column="mum_name" property="mumName" jdbcType="VARCHAR" />
+    <result column="mum_order" property="mumOrder" jdbcType="DOUBLE" />
+    <result column="mum_url_path" property="mumUrlPath" jdbcType="VARCHAR" />
+    <result column="mum_method_type" property="mumMethodType" jdbcType="VARCHAR" />
+    <result column="mum_status_code" property="mumStatusCode" jdbcType="VARCHAR" />
+    <result column="mum_status" property="mumStatus" jdbcType="VARCHAR" />
+    <result column="mum_createtime" property="mumCreatetime" jdbcType="VARCHAR" />
+    <result column="mum_createuser" property="mumCreateuser" jdbcType="VARCHAR" />
+    <result column="mum_updatetime" property="mumUpdatetime" jdbcType="VARCHAR" />
+    <result column="mum_updateuser" property="mumUpdateuser" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="interfaceMap" type="java.util.Map">
+    <result property="mumNum" column="mum_number" jdbcType="VARCHAR" />
+    <association property="url" resultMap="BaseResultMap" />
+  </resultMap>
+  <select id="getInterfaceMapList" resultMap="interfaceMap">
+    SELECT
+        a.mum_id,
+        a.mum_number,
+        a.mum_name,
+        a.mum_url_path,
+        a.mum_method_type
+    FROM
+        mstb_url_management a
+    JOIN iftb_url_test_case c ON a.mum_id = c.mum_id
+    JOIN iftb_execute_test_case d ON c.mtc_id = d.mtc_id
+    WHERE
+        a.mp_id = #{mpId}
+    AND d.iems_id = #{iemId}
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    mum_id, mp_id, iem_id, mtc_id, mum_number, mum_name, mum_order, mum_url_path, mum_method_type,
+    mum_status_code, mum_status, mum_createtime, mum_createuser, mum_updatetime, mum_updateuser
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.MstbURLManagementCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from mstb_url_management
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from mstb_url_management
+    where mum_id = #{mumId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mstb_url_management
+    where mum_id = #{mumId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.MstbURLManagementCriteria" >
+    delete from mstb_url_management
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.data.MstbURLManagement" useGeneratedKeys="true" keyProperty="mumId">
+    insert into mstb_url_management (mum_id, mp_id, iem_id,
+    mtc_id, mum_number, mum_name,
+    mum_order, mum_url_path, mum_method_type,
+    mum_status_code, mum_status, mum_createtime,
+    mum_createuser, mum_updatetime, mum_updateuser
+    )
+    values (#{mumId,jdbcType=INTEGER}, #{mpId,jdbcType=INTEGER}, #{iemId,jdbcType=INTEGER},
+    #{mtcId,jdbcType=INTEGER}, #{mumNumber,jdbcType=VARCHAR}, #{mumName,jdbcType=VARCHAR},
+    #{mumOrder,jdbcType=DOUBLE}, #{mumUrlPath,jdbcType=VARCHAR}, #{mumMethodType,jdbcType=VARCHAR},
+    #{mumStatusCode,jdbcType=VARCHAR}, #{mumStatus,jdbcType=VARCHAR}, #{mumCreatetime,jdbcType=VARCHAR},
+    #{mumCreateuser,jdbcType=VARCHAR}, #{mumUpdatetime,jdbcType=VARCHAR}, #{mumUpdateuser,jdbcType=VARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.MstbURLManagement" useGeneratedKeys="true" keyProperty="mumId">
+    insert into mstb_url_management
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mumId != null" >
+        mum_id,
+      </if>
+      <if test="mpId != null" >
+        mp_id,
+      </if>
+      <if test="iemId != null" >
+        iem_id,
+      </if>
+      <if test="mtcId != null" >
+        mtc_id,
+      </if>
+      <if test="mumNumber != null" >
+        mum_number,
+      </if>
+      <if test="mumName != null" >
+        mum_name,
+      </if>
+      <if test="mumOrder != null" >
+        mum_order,
+      </if>
+      <if test="mumUrlPath != null" >
+        mum_url_path,
+      </if>
+      <if test="mumMethodType != null" >
+        mum_method_type,
+      </if>
+      <if test="mumStatusCode != null" >
+        mum_status_code,
+      </if>
+      <if test="mumStatus != null" >
+        mum_status,
+      </if>
+      <if test="mumCreatetime != null" >
+        mum_createtime,
+      </if>
+      <if test="mumCreateuser != null" >
+        mum_createuser,
+      </if>
+      <if test="mumUpdatetime != null" >
+        mum_updatetime,
+      </if>
+      <if test="mumUpdateuser != null" >
+        mum_updateuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mumId != null" >
+        #{mumId,jdbcType=INTEGER},
+      </if>
+      <if test="mpId != null" >
+        #{mpId,jdbcType=INTEGER},
+      </if>
+      <if test="iemId != null" >
+        #{iemId,jdbcType=INTEGER},
+      </if>
+      <if test="mtcId != null" >
+        #{mtcId,jdbcType=INTEGER},
+      </if>
+      <if test="mumNumber != null" >
+        #{mumNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="mumName != null" >
+        #{mumName,jdbcType=VARCHAR},
+      </if>
+      <if test="mumOrder != null" >
+        #{mumOrder,jdbcType=DOUBLE},
+      </if>
+      <if test="mumUrlPath != null" >
+        #{mumUrlPath,jdbcType=VARCHAR},
+      </if>
+      <if test="mumMethodType != null" >
+        #{mumMethodType,jdbcType=VARCHAR},
+      </if>
+      <if test="mumStatusCode != null" >
+        #{mumStatusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mumStatus != null" >
+        #{mumStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mumCreatetime != null" >
+        #{mumCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mumCreateuser != null" >
+        #{mumCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="mumUpdatetime != null" >
+        #{mumUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mumUpdateuser != null" >
+        #{mumUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.data.MstbURLManagementCriteria" resultType="java.lang.Integer" >
+    select count(*) from mstb_url_management
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update mstb_url_management
+    <set >
+      <if test="record.mumId != null" >
+        mum_id = #{record.mumId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mpId != null" >
+        mp_id = #{record.mpId,jdbcType=INTEGER},
+      </if>
+      <if test="record.iemId != null" >
+        iem_id = #{record.iemId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mtcId != null" >
+        mtc_id = #{record.mtcId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mumNumber != null" >
+        mum_number = #{record.mumNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumName != null" >
+        mum_name = #{record.mumName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumOrder != null" >
+        mum_order = #{record.mumOrder,jdbcType=DOUBLE},
+      </if>
+      <if test="record.mumUrlPath != null" >
+        mum_url_path = #{record.mumUrlPath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumMethodType != null" >
+        mum_method_type = #{record.mumMethodType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumStatusCode != null" >
+        mum_status_code = #{record.mumStatusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumStatus != null" >
+        mum_status = #{record.mumStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumCreatetime != null" >
+        mum_createtime = #{record.mumCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumCreateuser != null" >
+        mum_createuser = #{record.mumCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumUpdatetime != null" >
+        mum_updatetime = #{record.mumUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mumUpdateuser != null" >
+        mum_updateuser = #{record.mumUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update mstb_url_management
+    set mum_id = #{record.mumId,jdbcType=INTEGER},
+    mp_id = #{record.mpId,jdbcType=INTEGER},
+    iem_id = #{record.iemId,jdbcType=INTEGER},
+    mtc_id = #{record.mtcId,jdbcType=INTEGER},
+    mum_number = #{record.mumNumber,jdbcType=VARCHAR},
+    mum_name = #{record.mumName,jdbcType=VARCHAR},
+    mum_order = #{record.mumOrder,jdbcType=DOUBLE},
+    mum_url_path = #{record.mumUrlPath,jdbcType=VARCHAR},
+    mum_method_type = #{record.mumMethodType,jdbcType=VARCHAR},
+    mum_status_code = #{record.mumStatusCode,jdbcType=VARCHAR},
+    mum_status = #{record.mumStatus,jdbcType=VARCHAR},
+    mum_createtime = #{record.mumCreatetime,jdbcType=VARCHAR},
+    mum_createuser = #{record.mumCreateuser,jdbcType=VARCHAR},
+    mum_updatetime = #{record.mumUpdatetime,jdbcType=VARCHAR},
+    mum_updateuser = #{record.mumUpdateuser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.MstbURLManagement" >
+    update mstb_url_management
+    <set >
+      <if test="mpId != null" >
+        mp_id = #{mpId,jdbcType=INTEGER},
+      </if>
+      <if test="iemId != null" >
+        iem_id = #{iemId,jdbcType=INTEGER},
+      </if>
+      <if test="mtcId != null" >
+        mtc_id = #{mtcId,jdbcType=INTEGER},
+      </if>
+      <if test="mumNumber != null" >
+        mum_number = #{mumNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="mumName != null" >
+        mum_name = #{mumName,jdbcType=VARCHAR},
+      </if>
+      <if test="mumOrder != null" >
+        mum_order = #{mumOrder,jdbcType=DOUBLE},
+      </if>
+      <if test="mumUrlPath != null" >
+        mum_url_path = #{mumUrlPath,jdbcType=VARCHAR},
+      </if>
+      <if test="mumMethodType != null" >
+        mum_method_type = #{mumMethodType,jdbcType=VARCHAR},
+      </if>
+      <if test="mumStatusCode != null" >
+        mum_status_code = #{mumStatusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mumStatus != null" >
+        mum_status = #{mumStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mumCreatetime != null" >
+        mum_createtime = #{mumCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mumCreateuser != null" >
+        mum_createuser = #{mumCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="mumUpdatetime != null" >
+        mum_updatetime = #{mumUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mumUpdateuser != null" >
+        mum_updateuser = #{mumUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mum_id = #{mumId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.MstbURLManagement" >
+    update mstb_url_management
+    set mp_id = #{mpId,jdbcType=INTEGER},
+      iem_id = #{iemId,jdbcType=INTEGER},
+      mtc_id = #{mtcId,jdbcType=INTEGER},
+      mum_number = #{mumNumber,jdbcType=VARCHAR},
+      mum_name = #{mumName,jdbcType=VARCHAR},
+      mum_order = #{mumOrder,jdbcType=DOUBLE},
+      mum_url_path = #{mumUrlPath,jdbcType=VARCHAR},
+      mum_method_type = #{mumMethodType,jdbcType=VARCHAR},
+      mum_status_code = #{mumStatusCode,jdbcType=VARCHAR},
+      mum_status = #{mumStatus,jdbcType=VARCHAR},
+      mum_createtime = #{mumCreatetime,jdbcType=VARCHAR},
+      mum_createuser = #{mumCreateuser,jdbcType=VARCHAR},
+      mum_updatetime = #{mumUpdatetime,jdbcType=VARCHAR},
+      mum_updateuser = #{mumUpdateuser,jdbcType=VARCHAR}
+    where mum_id = #{mumId,jdbcType=INTEGER}
+  </update>
+</mapper>

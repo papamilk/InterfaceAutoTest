@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.MstbURLParametersMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.MstbURLParameters" >
+    <id column="mup_id" property="mupId" jdbcType="INTEGER" />
+    <result column="mum_id" property="mumId" jdbcType="INTEGER" />
+    <result column="mup_name" property="mupName" jdbcType="VARCHAR" />
+    <result column="mup_type" property="mupType" jdbcType="VARCHAR" />
+    <result column="mup_description" property="mupDescription" jdbcType="VARCHAR" />
+    <result column="mup_status" property="mupStatus" jdbcType="VARCHAR" />
+    <result column="mup_createtime" property="mupCreatetime" jdbcType="VARCHAR" />
+    <result column="mup_createuser" property="mupCreateuser" jdbcType="VARCHAR" />
+    <result column="mup_updatetime" property="mupUpdatetime" jdbcType="VARCHAR" />
+    <result column="mup_updateuser" property="mupUpdateuser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    mup_id, mum_id, mup_name, mup_type, mup_description, mup_status, mup_createtime,
+    mup_createuser, mup_updatetime, mup_updateuser
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.MstbURLParametersCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from mstb_url_parameters
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from mstb_url_parameters
+    where mup_id = #{mupId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mstb_url_parameters
+    where mup_id = #{mupId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.MstbURLParametersCriteria" >
+    delete from mstb_url_parameters
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.data.MstbURLParameters" useGeneratedKeys="true" keyProperty="mupId">
+    insert into mstb_url_parameters (mup_id, mum_id, mup_name,
+    mup_type, mup_description, mup_status,
+    mup_createtime, mup_createuser, mup_updatetime,
+    mup_updateuser)
+    values (#{mupId,jdbcType=INTEGER}, #{mumId,jdbcType=INTEGER}, #{mupName,jdbcType=VARCHAR},
+    #{mupType,jdbcType=VARCHAR}, #{mupDescription,jdbcType=VARCHAR}, #{mupStatus,jdbcType=VARCHAR},
+    #{mupCreatetime,jdbcType=VARCHAR}, #{mupCreateuser,jdbcType=VARCHAR}, #{mupUpdatetime,jdbcType=VARCHAR},
+    #{mupUpdateuser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.MstbURLParameters" useGeneratedKeys="true" keyProperty="mupId">
+    insert into mstb_url_parameters
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mupId != null" >
+        mup_id,
+      </if>
+      <if test="mumId != null" >
+        mum_id,
+      </if>
+      <if test="mupName != null" >
+        mup_name,
+      </if>
+      <if test="mupType != null" >
+        mup_type,
+      </if>
+      <if test="mupDescription != null" >
+        mup_description,
+      </if>
+      <if test="mupStatus != null" >
+        mup_status,
+      </if>
+      <if test="mupCreatetime != null" >
+        mup_createtime,
+      </if>
+      <if test="mupCreateuser != null" >
+        mup_createuser,
+      </if>
+      <if test="mupUpdatetime != null" >
+        mup_updatetime,
+      </if>
+      <if test="mupUpdateuser != null" >
+        mup_updateuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mupId != null" >
+        #{mupId,jdbcType=INTEGER},
+      </if>
+      <if test="mumId != null" >
+        #{mumId,jdbcType=INTEGER},
+      </if>
+      <if test="mupName != null" >
+        #{mupName,jdbcType=VARCHAR},
+      </if>
+      <if test="mupType != null" >
+        #{mupType,jdbcType=VARCHAR},
+      </if>
+      <if test="mupDescription != null" >
+        #{mupDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="mupStatus != null" >
+        #{mupStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mupCreatetime != null" >
+        #{mupCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mupCreateuser != null" >
+        #{mupCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="mupUpdatetime != null" >
+        #{mupUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mupUpdateuser != null" >
+        #{mupUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.data.MstbURLParametersCriteria" resultType="java.lang.Integer" >
+    select count(*) from mstb_url_parameters
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update mstb_url_parameters
+    <set >
+      <if test="record.mupId != null" >
+        mup_id = #{record.mupId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mumId != null" >
+        mum_id = #{record.mumId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mupName != null" >
+        mup_name = #{record.mupName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mupType != null" >
+        mup_type = #{record.mupType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mupDescription != null" >
+        mup_description = #{record.mupDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mupStatus != null" >
+        mup_status = #{record.mupStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mupCreatetime != null" >
+        mup_createtime = #{record.mupCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mupCreateuser != null" >
+        mup_createuser = #{record.mupCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mupUpdatetime != null" >
+        mup_updatetime = #{record.mupUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mupUpdateuser != null" >
+        mup_updateuser = #{record.mupUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update mstb_url_parameters
+    set mup_id = #{record.mupId,jdbcType=INTEGER},
+    mum_id = #{record.mumId,jdbcType=INTEGER},
+    mup_name = #{record.mupName,jdbcType=VARCHAR},
+    mup_type = #{record.mupType,jdbcType=VARCHAR},
+    mup_description = #{record.mupDescription,jdbcType=VARCHAR},
+    mup_status = #{record.mupStatus,jdbcType=VARCHAR},
+    mup_createtime = #{record.mupCreatetime,jdbcType=VARCHAR},
+    mup_createuser = #{record.mupCreateuser,jdbcType=VARCHAR},
+    mup_updatetime = #{record.mupUpdatetime,jdbcType=VARCHAR},
+    mup_updateuser = #{record.mupUpdateuser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.MstbURLParameters" >
+    update mstb_url_parameters
+    <set >
+      <if test="mumId != null" >
+        mum_id = #{mumId,jdbcType=INTEGER},
+      </if>
+      <if test="mupName != null" >
+        mup_name = #{mupName,jdbcType=VARCHAR},
+      </if>
+      <if test="mupType != null" >
+        mup_type = #{mupType,jdbcType=VARCHAR},
+      </if>
+      <if test="mupDescription != null" >
+        mup_description = #{mupDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="mupStatus != null" >
+        mup_status = #{mupStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="mupCreatetime != null" >
+        mup_createtime = #{mupCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mupCreateuser != null" >
+        mup_createuser = #{mupCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="mupUpdatetime != null" >
+        mup_updatetime = #{mupUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="mupUpdateuser != null" >
+        mup_updateuser = #{mupUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mup_id = #{mupId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.MstbURLParameters" >
+    update mstb_url_parameters
+    set mum_id = #{mumId,jdbcType=INTEGER},
+      mup_name = #{mupName,jdbcType=VARCHAR},
+      mup_type = #{mupType,jdbcType=VARCHAR},
+      mup_description = #{mupDescription,jdbcType=VARCHAR},
+      mup_status = #{mupStatus,jdbcType=VARCHAR},
+      mup_createtime = #{mupCreatetime,jdbcType=VARCHAR},
+      mup_createuser = #{mupCreateuser,jdbcType=VARCHAR},
+      mup_updatetime = #{mupUpdatetime,jdbcType=VARCHAR},
+      mup_updateuser = #{mupUpdateuser,jdbcType=VARCHAR}
+    where mup_id = #{mupId,jdbcType=INTEGER}
+  </update>
+</mapper>

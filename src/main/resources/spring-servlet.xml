@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+  <context:component-scan base-package="blk.interfacetesting.web"/>
+  <context:annotation-config/>
+  <mvc:annotation-driven validator="validator"/>
+  <mvc:default-servlet-handler/>
+
+  <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+    <property name="messageConverters">
+      <list>
+        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+          <property name="supportedMediaTypes">
+            <list>
+              <value>text/html;charset=UTF-8</value>
+              <value>text/plain;charset=UTF-8</value>
+              <value>application/json;charset=UTF-8</value>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- 以下 validator  ConversionService 在使用 mvc:annotation-driven 会 自动注册-->
+  <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+    <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+    <property name="validationMessageSource" ref="messageSource"/>
+  </bean>
+
+  <!-- 国际化的消息资源文件（本系统中主要用于显示/错误消息定制） -->
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basenames">
+      <list>
+        <value>validation.ValidationMessages</value>
+        <value>org.hibernate.validator.ValidationMessages</value>
+      </list>
+    </property>
+    <property name="defaultEncoding" value="UTF-8"/>
+  </bean>
+
+  <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor">
+    <property name="validator" ref="validator"/>
+  </bean>
+
+  <!-- aop -->
+  <aop:aspectj-autoproxy />
+  <bean id="controllerAop" class="blk.common.aop.ControllerAOP"/>
+
+  <aop:config>
+    <aop:aspect id="resultAop" ref="controllerAop">
+      <aop:pointcut id="result" expression="execution(public blk.common.bean.ResultBean *(..))
+      and !execution(public * findTotalTestDataCount(..))
+      and !execution(public * findExecutedDataCount(..))" />
+      <aop:around method="handlerControllerResultMethod" pointcut-ref="result" />
+    </aop:aspect>
+    <aop:aspect id="pageResultAop" ref="controllerAop">
+      <aop:pointcut id="pageResult" expression="execution(public blk.common.bean.PageResultBean *(..))" />
+      <aop:around method="handlerControllerPageResultMethod" pointcut-ref="pageResult"/>
+    </aop:aspect>
+  </aop:config>
+</beans>

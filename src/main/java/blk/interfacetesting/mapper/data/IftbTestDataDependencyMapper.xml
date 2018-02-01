@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.IftbTestDataDependencyMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.IftbTestDataDependency" >
+    <id column="itdd_id" property="itddId" jdbcType="INTEGER" />
+    <result column="itd_id" property="itdId" jdbcType="INTEGER" />
+    <result column="itdd_dependency" property="itddDependency" jdbcType="VARCHAR" />
+    <result column="itdd_type" property="itddType" jdbcType="VARCHAR" />
+    <result column="itdd_status" property="itddStatus" jdbcType="VARCHAR" />
+    <result column="itdd_createtime" property="itddCreatetime" jdbcType="VARCHAR" />
+    <result column="itdd_createuser" property="itddCreateuser" jdbcType="VARCHAR" />
+    <result column="itdd_updatetime" property="itddUpdatetime" jdbcType="VARCHAR" />
+    <result column="itdd_updateuser" property="itddUpdateuser" jdbcType="VARCHAR" />
+    <result column="itd_name" property="itdName" jdbcType="VARCHAR" />
+  </resultMap>
+  <!--<select id="getDataDependencyList" resultType="blk.interfacetesting.model.TestData">
+    SELECT
+      a.mum_url_path AS "mumURLPath",
+      a.mum_method_type AS "mumMethodType",
+      a.mum_status_code AS "mumStatusCode",
+      b.itd_id AS "itdId",
+      b.itd_cols AS "itdCols",
+      b.itd_values AS "itdValues",
+      b.itd_param_types AS "itdParamTypes",
+      b.itd_expect_result AS "itdExpectResult",
+      b.itd_expect_result_type AS "itdExpectResultType"
+    FROM
+      mstb_url_management a
+    JOIN iftb_test_data b ON a.mum_id = b.mum_id
+    WHERE b.itd_id IN
+    <foreach collection="list" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>-->
+  <select id="getDependencyDatas" resultMap="BaseResultMap">
+    SELECT
+      dd.itdd_id AS itddId,
+      dd.itd_id AS itdId,
+      dd.itdd_dependency AS itddDependency,
+      dd.itdd_type AS itddType,
+      td.itd_name AS itdName
+    FROM
+      iftb_test_data_dependency dd
+    JOIN iftb_test_data td ON dd.itd_id = td.itd_id
+  </select>
+  <select id="getDependencyDataOne" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT
+      dd.itdd_id AS itddId,
+      dd.itd_id AS itdId,
+      dd.itdd_dependency AS itddDependency,
+      dd.itdd_type AS itddType,
+      td.itd_name AS itdName
+    FROM
+      iftb_test_data_dependency dd
+    JOIN iftb_test_data td ON dd.itd_id = td.itd_id
+    WHERE
+      dd.itdd_id = #{itddId}
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    itdd_id, itd_id, itdd_dependency, itdd_type, itdd_status, itdd_createtime, itdd_createuser, 
+    itdd_updatetime, itdd_updateuser
+  </sql>
+  <!-- special search for itdName -->
+  <sql id="itdName_column">
+    dd.itdd_id, dd.itd_id, dd.itdd_dependency, dd.itdd_type, dd.itdd_status, dd.itdd_createtime,
+    dd.itdd_createuser, dd.itdd_updatetime, dd.itdd_updateuser, td.itd_name
+  </sql>
+  <sql id="itdName_table">
+    dd LEFT JOIN iftb_test_data td ON dd.itd_id = td.itd_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.IftbTestDataDependencyCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <choose>
+      <when test="addItdName">
+        <include refid="itdName_column"/>
+        from iftb_test_data_dependency
+        <include refid="itdName_table"/>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+        from iftb_test_data_dependency
+      </otherwise>
+    </choose>
+
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from iftb_test_data_dependency
+    where itdd_id = #{itddId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from iftb_test_data_dependency
+    where itdd_id = #{itddId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.IftbTestDataDependencyCriteria" >
+    delete from iftb_test_data_dependency
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.data.IftbTestDataDependency" useGeneratedKeys="true" keyProperty="itddId">
+    insert into iftb_test_data_dependency (itdd_id, itd_id, itdd_dependency, 
+      itdd_type, itdd_status, itdd_createtime, 
+      itdd_createuser, itdd_updatetime, itdd_updateuser
+      )
+    values (#{itddId,jdbcType=INTEGER}, #{itdId,jdbcType=INTEGER}, #{itddDependency,jdbcType=VARCHAR}, 
+      #{itddType,jdbcType=VARCHAR}, #{itddStatus,jdbcType=VARCHAR}, #{itddCreatetime,jdbcType=VARCHAR}, 
+      #{itddCreateuser,jdbcType=VARCHAR}, #{itddUpdatetime,jdbcType=VARCHAR}, #{itddUpdateuser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.IftbTestDataDependency" >
+    insert into iftb_test_data_dependency
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="itddId != null" >
+        itdd_id,
+      </if>
+      <if test="itdId != null" >
+        itd_id,
+      </if>
+      <if test="itddDependency != null" >
+        itdd_dependency,
+      </if>
+      <if test="itddType != null" >
+        itdd_type,
+      </if>
+      <if test="itddStatus != null" >
+        itdd_status,
+      </if>
+      <if test="itddCreatetime != null" >
+        itdd_createtime,
+      </if>
+      <if test="itddCreateuser != null" >
+        itdd_createuser,
+      </if>
+      <if test="itddUpdatetime != null" >
+        itdd_updatetime,
+      </if>
+      <if test="itddUpdateuser != null" >
+        itdd_updateuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="itddId != null" >
+        #{itddId,jdbcType=INTEGER},
+      </if>
+      <if test="itdId != null" >
+        #{itdId,jdbcType=INTEGER},
+      </if>
+      <if test="itddDependency != null" >
+        #{itddDependency,jdbcType=VARCHAR},
+      </if>
+      <if test="itddType != null" >
+        #{itddType,jdbcType=VARCHAR},
+      </if>
+      <if test="itddStatus != null" >
+        #{itddStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="itddCreatetime != null" >
+        #{itddCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="itddCreateuser != null" >
+        #{itddCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="itddUpdatetime != null" >
+        #{itddUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="itddUpdateuser != null" >
+        #{itddUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.data.IftbTestDataDependencyCriteria" resultType="java.lang.Integer" >
+    select count(*) from iftb_test_data_dependency
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update iftb_test_data_dependency
+    <set >
+      <if test="record.itddId != null" >
+        itdd_id = #{record.itddId,jdbcType=INTEGER},
+      </if>
+      <if test="record.itdId != null" >
+        itd_id = #{record.itdId,jdbcType=INTEGER},
+      </if>
+      <if test="record.itddDependency != null" >
+        itdd_dependency = #{record.itddDependency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.itddType != null" >
+        itdd_type = #{record.itddType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.itddStatus != null" >
+        itdd_status = #{record.itddStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.itddCreatetime != null" >
+        itdd_createtime = #{record.itddCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.itddCreateuser != null" >
+        itdd_createuser = #{record.itddCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.itddUpdatetime != null" >
+        itdd_updatetime = #{record.itddUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.itddUpdateuser != null" >
+        itdd_updateuser = #{record.itddUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update iftb_test_data_dependency
+    set itdd_id = #{record.itddId,jdbcType=INTEGER},
+      itd_id = #{record.itdId,jdbcType=INTEGER},
+      itdd_dependency = #{record.itddDependency,jdbcType=VARCHAR},
+      itdd_type = #{record.itddType,jdbcType=VARCHAR},
+      itdd_status = #{record.itddStatus,jdbcType=VARCHAR},
+      itdd_createtime = #{record.itddCreatetime,jdbcType=VARCHAR},
+      itdd_createuser = #{record.itddCreateuser,jdbcType=VARCHAR},
+      itdd_updatetime = #{record.itddUpdatetime,jdbcType=VARCHAR},
+      itdd_updateuser = #{record.itddUpdateuser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.IftbTestDataDependency" >
+    update iftb_test_data_dependency
+    <set >
+      <if test="itdId != null" >
+        itd_id = #{itdId,jdbcType=INTEGER},
+      </if>
+      <if test="itddDependency != null" >
+        itdd_dependency = #{itddDependency,jdbcType=VARCHAR},
+      </if>
+      <if test="itddType != null" >
+        itdd_type = #{itddType,jdbcType=VARCHAR},
+      </if>
+      <if test="itddStatus != null" >
+        itdd_status = #{itddStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="itddCreatetime != null" >
+        itdd_createtime = #{itddCreatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="itddCreateuser != null" >
+        itdd_createuser = #{itddCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="itddUpdatetime != null" >
+        itdd_updatetime = #{itddUpdatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="itddUpdateuser != null" >
+        itdd_updateuser = #{itddUpdateuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where itdd_id = #{itddId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.IftbTestDataDependency" >
+    update iftb_test_data_dependency
+    set itd_id = #{itdId,jdbcType=INTEGER},
+      itdd_dependency = #{itddDependency,jdbcType=VARCHAR},
+      itdd_type = #{itddType,jdbcType=VARCHAR},
+      itdd_status = #{itddStatus,jdbcType=VARCHAR},
+      itdd_createtime = #{itddCreatetime,jdbcType=VARCHAR},
+      itdd_createuser = #{itddCreateuser,jdbcType=VARCHAR},
+      itdd_updatetime = #{itddUpdatetime,jdbcType=VARCHAR},
+      itdd_updateuser = #{itddUpdateuser,jdbcType=VARCHAR}
+    where itdd_id = #{itddId,jdbcType=INTEGER}
+  </update>
+</mapper>

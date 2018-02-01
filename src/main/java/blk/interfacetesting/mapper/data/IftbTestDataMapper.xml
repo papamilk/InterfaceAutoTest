@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.IftbTestDataMapper">
+    <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.IftbTestData">
+        <id column="itd_id" property="itdId" jdbcType="INTEGER"/>
+        <result column="iem_id" property="iemId" jdbcType="INTEGER"/>
+        <result column="mum_id" property="mumId" jdbcType="INTEGER"/>
+        <result column="mtc_id" property="mtcId" jdbcType="INTEGER"/>
+        <result column="itd_number" property="itdNumber" jdbcType="VARCHAR"/>
+        <result column="itd_name" property="itdName" jdbcType="VARCHAR"/>
+        <result column="itd_cols" property="itdCols" jdbcType="VARCHAR"/>
+        <result column="itd_values" property="itdValues" jdbcType="VARCHAR"/>
+        <result column="itd_param_types" property="itdParamTypes" jdbcType="VARCHAR"/>
+        <result column="itd_type" property="itdType" jdbcType="INTEGER"/>
+        <result column="itd_expect_time" property="itdExpectTime" jdbcType="INTEGER"/>
+        <result column="itd_expect_result" property="itdExpectResult" jdbcType="VARCHAR"/>
+        <result column="itd_expect_result_type" property="itdExpectResultType" jdbcType="VARCHAR"/>
+        <result column="itd_sql" property="itdSql" jdbcType="VARCHAR"/>
+        <result column="itd_sql_expect_result" property="itdSqlExpectResult" jdbcType="VARCHAR"/>
+        <result column="itd_status" property="itdStatus" jdbcType="VARCHAR"/>
+        <result column="itd_createtime" property="itdCreatetime" jdbcType="VARCHAR"/>
+        <result column="itd_createuser" property="itdCreateuser" jdbcType="VARCHAR"/>
+        <result column="itd_updatetime" property="itdUpdatetime" jdbcType="VARCHAR"/>
+        <result column="itd_updateuser" property="itdUpdateuser" jdbcType="VARCHAR"/>
+        <result column="mum_name" property="mumName" jdbcType="VARCHAR"/>
+        <result column="mtc_name" property="mtcName" jdbcType="VARCHAR"/>
+        <result column="itdd_dependency" property="itddddependency" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="blk.interfacetesting.modle.data.IftbTestData"
+               extends="BaseResultMap">
+        <result column="itd_expect_result" property="itdExpectResult" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <select id="getListByMtcId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+        c.itd_id                 AS "itdId",
+        c.iem_id                 AS "iemId",
+        c.mum_id                 AS "mumId",
+        c.mtc_id                 AS "mtcId",
+        c.itd_name               AS "itdName",
+        c.itd_cols               AS "itdCols",
+        c.itd_values             AS "itdValues",
+        c.itd_param_types        AS "itdParamTypes",
+        c.itd_expect_time        AS "itdExpectTime",
+        c.itd_expect_result      AS "itdExpectResult",
+        c.itd_expect_result_type AS "itdExpectResultType",
+        c.itd_sql                AS "itdSql",
+        c.itd_sql_expect_result  AS "itdSqlExpectResult",
+        m.mum_name               AS "mumName",
+        tc.mtc_name              AS "mtcName"
+        FROM
+        iftb_test_data c
+        JOIN mstb_url_management m ON c.mum_id = m.mum_id
+        JOIN mstb_test_case tc ON c.mtc_id = tc.mtc_id
+        WHERE
+        tc.mtc_id = #{mtcId}
+    </select>
+    <sql id="Example_Where_Clause" >
+        <where >
+            <foreach collection="oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause" >
+        <where >
+            <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+                <if test="criteria.valid" >
+                    <trim prefix="(" suffix=")" prefixOverrides="and" >
+                        <foreach collection="criteria.criteria" item="criterion" >
+                            <choose >
+                                <when test="criterion.noValue" >
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue" >
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue" >
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue" >
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List" >
+        itd_id, iem_id, mum_id, mtc_id, itd_number, itd_name, itd_cols, itd_values, itd_param_types,
+        itd_type, itd_expect_time, itd_expect_result_type, itd_sql, itd_sql_expect_result,
+        itd_status, itd_createtime, itd_createuser, itd_updatetime, itd_updateuser
+    </sql>
+    <sql id="Blob_Column_List" >
+        itd_expect_result
+    </sql>
+    <!-- add by Saul for special search -->
+    <sql id="dependency_column">
+        d.itd_id, d.iem_id, d.mum_id, d.mtc_id, d.itd_number, d.itd_name, d.itd_cols, d.itd_values, d.itd_param_types,
+        d.itd_type, d.itd_expect_time, d.itd_expect_result, d.itd_expect_result_type, d.itd_sql, d.itd_sql_expect_result, d.
+        itd_status, d.itd_createtime, d.itd_createuser, d.itd_updatetime, d.itd_updateuser, dd.itdd_dependency
+    </sql>
+    <sql id="dependency_table">
+        d left join iftb_test_data_dependency dd on dd.itd_id = d.itd_id
+    </sql>
+    <!-- search mtcName and mumName -->
+    <sql id="special_column">
+        d.itd_id, d.iem_id, d.mum_id, d.mtc_id, d.itd_name, d.itd_cols, d.itd_values, d.itd_param_types, d.itd_expect_time,
+        d.itd_expect_result, d.itd_expect_result_type, d.itd_sql, d.itd_sql_expect_result, m.mum_name, tc.mtc_name
+    </sql>
+    <sql id="special_table">
+        d left join mstb_url_management m on d.mum_id = m.mum_id
+        left join mstb_test_case tc on d.mtc_id = tc.mtc_id
+    </sql>
+    <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="blk.interfacetesting.modle.data.IftbTestDataCriteria" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from iftb_test_data
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.IftbTestDataCriteria" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <!-- add by Saul -->
+        <choose>
+            <when test="addDependency">
+                <include refid="dependency_column"/>
+                from iftb_test_data
+                <include refid="dependency_table"/>
+            </when>
+            <when test="specialSearch">
+                <include refid="special_column"/>
+                from iftb_test_data
+                <include refid="special_table"/>
+            </when>
+            <otherwise>
+                <include refid="Base_Column_List"/>
+                from iftb_test_data
+            </otherwise>
+        </choose>
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null" >
+            order by ${orderByClause}
+        </if>
+        <if test="page != null" >
+            limit #{page.begin} , #{page.length}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from iftb_test_data
+        where itd_id = #{itdId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from iftb_test_data
+        where itd_id = #{itdId,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.IftbTestDataCriteria" >
+        delete from iftb_test_data
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+    <insert id="insert" parameterType="blk.interfacetesting.modle.data.IftbTestData" useGeneratedKeys="true" keyProperty="itdId">
+        insert into iftb_test_data (itd_id, iem_id, mum_id,
+        mtc_id, itd_number, itd_name,
+        itd_cols, itd_values, itd_param_types,
+        itd_type, itd_expect_time, itd_expect_result_type,
+        itd_sql, itd_sql_expect_result, itd_status,
+        itd_createtime, itd_createuser, itd_updatetime,
+        itd_updateuser, itd_expect_result)
+        values (#{itdId,jdbcType=INTEGER}, #{iemId,jdbcType=INTEGER}, #{mumId,jdbcType=INTEGER},
+        #{mtcId,jdbcType=INTEGER}, #{itdNumber,jdbcType=VARCHAR}, #{itdName,jdbcType=VARCHAR},
+        #{itdCols,jdbcType=VARCHAR}, #{itdValues,jdbcType=VARCHAR}, #{itdParamTypes,jdbcType=VARCHAR},
+        #{itdType,jdbcType=INTEGER}, #{itdExpectTime,jdbcType=INTEGER}, #{itdExpectResultType,jdbcType=VARCHAR},
+        #{itdSql,jdbcType=VARCHAR}, #{itdSqlExpectResult,jdbcType=VARCHAR}, #{itdStatus,jdbcType=VARCHAR},
+        #{itdCreatetime,jdbcType=VARCHAR}, #{itdCreateuser,jdbcType=VARCHAR}, #{itdUpdatetime,jdbcType=VARCHAR},
+        #{itdUpdateuser,jdbcType=VARCHAR}, #{itdExpectResult,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.IftbTestData" useGeneratedKeys="true" keyProperty="itdId">
+        insert into iftb_test_data
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="itdId != null" >
+                itd_id,
+            </if>
+            <if test="iemId != null" >
+                iem_id,
+            </if>
+            <if test="mumId != null" >
+                mum_id,
+            </if>
+            <if test="mtcId != null" >
+                mtc_id,
+            </if>
+            <if test="itdNumber != null" >
+                itd_number,
+            </if>
+            <if test="itdName != null" >
+                itd_name,
+            </if>
+            <if test="itdCols != null" >
+                itd_cols,
+            </if>
+            <if test="itdValues != null" >
+                itd_values,
+            </if>
+            <if test="itdParamTypes != null" >
+                itd_param_types,
+            </if>
+            <if test="itdType != null" >
+                itd_type,
+            </if>
+            <if test="itdExpectTime != null" >
+                itd_expect_time,
+            </if>
+            <if test="itdExpectResultType != null" >
+                itd_expect_result_type,
+            </if>
+            <if test="itdSql != null" >
+                itd_sql,
+            </if>
+            <if test="itdSqlExpectResult != null" >
+                itd_sql_expect_result,
+            </if>
+            <if test="itdStatus != null" >
+                itd_status,
+            </if>
+            <if test="itdCreatetime != null" >
+                itd_createtime,
+            </if>
+            <if test="itdCreateuser != null" >
+                itd_createuser,
+            </if>
+            <if test="itdUpdatetime != null" >
+                itd_updatetime,
+            </if>
+            <if test="itdUpdateuser != null" >
+                itd_updateuser,
+            </if>
+            <if test="itdExpectResult != null" >
+                itd_expect_result,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="itdId != null" >
+                #{itdId,jdbcType=INTEGER},
+            </if>
+            <if test="iemId != null" >
+                #{iemId,jdbcType=INTEGER},
+            </if>
+            <if test="mumId != null" >
+                #{mumId,jdbcType=INTEGER},
+            </if>
+            <if test="mtcId != null" >
+                #{mtcId,jdbcType=INTEGER},
+            </if>
+            <if test="itdNumber != null" >
+                #{itdNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="itdName != null" >
+                #{itdName,jdbcType=VARCHAR},
+            </if>
+            <if test="itdCols != null" >
+                #{itdCols,jdbcType=VARCHAR},
+            </if>
+            <if test="itdValues != null" >
+                #{itdValues,jdbcType=VARCHAR},
+            </if>
+            <if test="itdParamTypes != null" >
+                #{itdParamTypes,jdbcType=VARCHAR},
+            </if>
+            <if test="itdType != null" >
+                #{itdType,jdbcType=INTEGER},
+            </if>
+            <if test="itdExpectTime != null" >
+                #{itdExpectTime,jdbcType=INTEGER},
+            </if>
+            <if test="itdExpectResultType != null" >
+                #{itdExpectResultType,jdbcType=VARCHAR},
+            </if>
+            <if test="itdSql != null" >
+                #{itdSql,jdbcType=VARCHAR},
+            </if>
+            <if test="itdSqlExpectResult != null" >
+                #{itdSqlExpectResult,jdbcType=VARCHAR},
+            </if>
+            <if test="itdStatus != null" >
+                #{itdStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="itdCreatetime != null" >
+                #{itdCreatetime,jdbcType=VARCHAR},
+            </if>
+            <if test="itdCreateuser != null" >
+                #{itdCreateuser,jdbcType=VARCHAR},
+            </if>
+            <if test="itdUpdatetime != null" >
+                #{itdUpdatetime,jdbcType=VARCHAR},
+            </if>
+            <if test="itdUpdateuser != null" >
+                #{itdUpdateuser,jdbcType=VARCHAR},
+            </if>
+            <if test="itdExpectResult != null" >
+                #{itdExpectResult,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="blk.interfacetesting.modle.data.IftbTestDataCriteria" resultType="java.lang.Integer" >
+        select count(*) from iftb_test_data
+        <if test="_parameter != null" >
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map" >
+        update iftb_test_data
+        <set >
+            <if test="record.itdId != null" >
+                itd_id = #{record.itdId,jdbcType=INTEGER},
+            </if>
+            <if test="record.iemId != null" >
+                iem_id = #{record.iemId,jdbcType=INTEGER},
+            </if>
+            <if test="record.mumId != null" >
+                mum_id = #{record.mumId,jdbcType=INTEGER},
+            </if>
+            <if test="record.mtcId != null" >
+                mtc_id = #{record.mtcId,jdbcType=INTEGER},
+            </if>
+            <if test="record.itdNumber != null" >
+                itd_number = #{record.itdNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdName != null" >
+                itd_name = #{record.itdName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdCols != null" >
+                itd_cols = #{record.itdCols,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdValues != null" >
+                itd_values = #{record.itdValues,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdParamTypes != null" >
+                itd_param_types = #{record.itdParamTypes,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdType != null" >
+                itd_type = #{record.itdType,jdbcType=INTEGER},
+            </if>
+            <if test="record.itdExpectTime != null" >
+                itd_expect_time = #{record.itdExpectTime,jdbcType=INTEGER},
+            </if>
+            <if test="record.itdExpectResultType != null" >
+                itd_expect_result_type = #{record.itdExpectResultType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdSql != null" >
+                itd_sql = #{record.itdSql,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdSqlExpectResult != null" >
+                itd_sql_expect_result = #{record.itdSqlExpectResult,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdStatus != null" >
+                itd_status = #{record.itdStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdCreatetime != null" >
+                itd_createtime = #{record.itdCreatetime,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdCreateuser != null" >
+                itd_createuser = #{record.itdCreateuser,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdUpdatetime != null" >
+                itd_updatetime = #{record.itdUpdatetime,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdUpdateuser != null" >
+                itd_updateuser = #{record.itdUpdateuser,jdbcType=VARCHAR},
+            </if>
+            <if test="record.itdExpectResult != null" >
+                itd_expect_result = #{record.itdExpectResult,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByExampleWithBLOBs" parameterType="map" >
+        update iftb_test_data
+        set itd_id = #{record.itdId,jdbcType=INTEGER},
+        iem_id = #{record.iemId,jdbcType=INTEGER},
+        mum_id = #{record.mumId,jdbcType=INTEGER},
+        mtc_id = #{record.mtcId,jdbcType=INTEGER},
+        itd_number = #{record.itdNumber,jdbcType=VARCHAR},
+        itd_name = #{record.itdName,jdbcType=VARCHAR},
+        itd_cols = #{record.itdCols,jdbcType=VARCHAR},
+        itd_values = #{record.itdValues,jdbcType=VARCHAR},
+        itd_param_types = #{record.itdParamTypes,jdbcType=VARCHAR},
+        itd_type = #{record.itdType,jdbcType=INTEGER},
+        itd_expect_time = #{record.itdExpectTime,jdbcType=INTEGER},
+        itd_expect_result_type = #{record.itdExpectResultType,jdbcType=VARCHAR},
+        itd_sql = #{record.itdSql,jdbcType=VARCHAR},
+        itd_sql_expect_result = #{record.itdSqlExpectResult,jdbcType=VARCHAR},
+        itd_status = #{record.itdStatus,jdbcType=VARCHAR},
+        itd_createtime = #{record.itdCreatetime,jdbcType=VARCHAR},
+        itd_createuser = #{record.itdCreateuser,jdbcType=VARCHAR},
+        itd_updatetime = #{record.itdUpdatetime,jdbcType=VARCHAR},
+        itd_updateuser = #{record.itdUpdateuser,jdbcType=VARCHAR},
+        itd_expect_result = #{record.itdExpectResult,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map" >
+        update iftb_test_data
+        set itd_id = #{record.itdId,jdbcType=INTEGER},
+        iem_id = #{record.iemId,jdbcType=INTEGER},
+        mum_id = #{record.mumId,jdbcType=INTEGER},
+        mtc_id = #{record.mtcId,jdbcType=INTEGER},
+        itd_number = #{record.itdNumber,jdbcType=VARCHAR},
+        itd_name = #{record.itdName,jdbcType=VARCHAR},
+        itd_cols = #{record.itdCols,jdbcType=VARCHAR},
+        itd_values = #{record.itdValues,jdbcType=VARCHAR},
+        itd_param_types = #{record.itdParamTypes,jdbcType=VARCHAR},
+        itd_type = #{record.itdType,jdbcType=INTEGER},
+        itd_expect_time = #{record.itdExpectTime,jdbcType=INTEGER},
+        itd_expect_result_type = #{record.itdExpectResultType,jdbcType=VARCHAR},
+        itd_sql = #{record.itdSql,jdbcType=VARCHAR},
+        itd_sql_expect_result = #{record.itdSqlExpectResult,jdbcType=VARCHAR},
+        itd_status = #{record.itdStatus,jdbcType=VARCHAR},
+        itd_createtime = #{record.itdCreatetime,jdbcType=VARCHAR},
+        itd_createuser = #{record.itdCreateuser,jdbcType=VARCHAR},
+        itd_updatetime = #{record.itdUpdatetime,jdbcType=VARCHAR},
+        itd_updateuser = #{record.itdUpdateuser,jdbcType=VARCHAR}
+        <if test="_parameter != null" >
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.IftbTestData" >
+        update iftb_test_data
+        <set >
+            <if test="iemId != null" >
+                iem_id = #{iemId,jdbcType=INTEGER},
+            </if>
+            <if test="mumId != null" >
+                mum_id = #{mumId,jdbcType=INTEGER},
+            </if>
+            <if test="mtcId != null" >
+                mtc_id = #{mtcId,jdbcType=INTEGER},
+            </if>
+            <if test="itdNumber != null" >
+                itd_number = #{itdNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="itdName != null" >
+                itd_name = #{itdName,jdbcType=VARCHAR},
+            </if>
+            <if test="itdCols != null" >
+                itd_cols = #{itdCols,jdbcType=VARCHAR},
+            </if>
+            <if test="itdValues != null" >
+                itd_values = #{itdValues,jdbcType=VARCHAR},
+            </if>
+            <if test="itdParamTypes != null" >
+                itd_param_types = #{itdParamTypes,jdbcType=VARCHAR},
+            </if>
+            <if test="itdType != null" >
+                itd_type = #{itdType,jdbcType=INTEGER},
+            </if>
+            <if test="itdExpectTime != null" >
+                itd_expect_time = #{itdExpectTime,jdbcType=INTEGER},
+            </if>
+            <if test="itdExpectResultType != null" >
+                itd_expect_result_type = #{itdExpectResultType,jdbcType=VARCHAR},
+            </if>
+            <if test="itdSql != null" >
+                itd_sql = #{itdSql,jdbcType=VARCHAR},
+            </if>
+            <if test="itdSqlExpectResult != null" >
+                itd_sql_expect_result = #{itdSqlExpectResult,jdbcType=VARCHAR},
+            </if>
+            <if test="itdStatus != null" >
+                itd_status = #{itdStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="itdCreatetime != null" >
+                itd_createtime = #{itdCreatetime,jdbcType=VARCHAR},
+            </if>
+            <if test="itdCreateuser != null" >
+                itd_createuser = #{itdCreateuser,jdbcType=VARCHAR},
+            </if>
+            <if test="itdUpdatetime != null" >
+                itd_updatetime = #{itdUpdatetime,jdbcType=VARCHAR},
+            </if>
+            <if test="itdUpdateuser != null" >
+                itd_updateuser = #{itdUpdateuser,jdbcType=VARCHAR},
+            </if>
+            <if test="itdExpectResult != null" >
+                itd_expect_result = #{itdExpectResult,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where itd_id = #{itdId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="blk.interfacetesting.modle.data.IftbTestData" >
+        update iftb_test_data
+        set iem_id = #{iemId,jdbcType=INTEGER},
+        mum_id = #{mumId,jdbcType=INTEGER},
+        mtc_id = #{mtcId,jdbcType=INTEGER},
+        itd_number = #{itdNumber,jdbcType=VARCHAR},
+        itd_name = #{itdName,jdbcType=VARCHAR},
+        itd_cols = #{itdCols,jdbcType=VARCHAR},
+        itd_values = #{itdValues,jdbcType=VARCHAR},
+        itd_param_types = #{itdParamTypes,jdbcType=VARCHAR},
+        itd_type = #{itdType,jdbcType=INTEGER},
+        itd_expect_time = #{itdExpectTime,jdbcType=INTEGER},
+        itd_expect_result_type = #{itdExpectResultType,jdbcType=VARCHAR},
+        itd_sql = #{itdSql,jdbcType=VARCHAR},
+        itd_sql_expect_result = #{itdSqlExpectResult,jdbcType=VARCHAR},
+        itd_status = #{itdStatus,jdbcType=VARCHAR},
+        itd_createtime = #{itdCreatetime,jdbcType=VARCHAR},
+        itd_createuser = #{itdCreateuser,jdbcType=VARCHAR},
+        itd_updatetime = #{itdUpdatetime,jdbcType=VARCHAR},
+        itd_updateuser = #{itdUpdateuser,jdbcType=VARCHAR},
+        itd_expect_result = #{itdExpectResult,jdbcType=LONGVARCHAR}
+        where itd_id = #{itdId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.IftbTestData" >
+    update iftb_test_data
+    set iem_id = #{iemId,jdbcType=INTEGER},
+      mum_id = #{mumId,jdbcType=INTEGER},
+      mtc_id = #{mtcId,jdbcType=INTEGER},
+      itd_number = #{itdNumber,jdbcType=VARCHAR},
+      itd_name = #{itdName,jdbcType=VARCHAR},
+      itd_cols = #{itdCols,jdbcType=VARCHAR},
+      itd_values = #{itdValues,jdbcType=VARCHAR},
+      itd_param_types = #{itdParamTypes,jdbcType=VARCHAR},
+      itd_type = #{itdType,jdbcType=INTEGER},
+      itd_expect_time = #{itdExpectTime,jdbcType=INTEGER},
+      itd_expect_result_type = #{itdExpectResultType,jdbcType=VARCHAR},
+      itd_sql = #{itdSql,jdbcType=VARCHAR},
+      itd_sql_expect_result = #{itdSqlExpectResult,jdbcType=VARCHAR},
+      itd_status = #{itdStatus,jdbcType=VARCHAR},
+      itd_createtime = #{itdCreatetime,jdbcType=VARCHAR},
+      itd_createuser = #{itdCreateuser,jdbcType=VARCHAR},
+      itd_updatetime = #{itdUpdatetime,jdbcType=VARCHAR},
+      itd_updateuser = #{itdUpdateuser,jdbcType=VARCHAR}
+    where itd_id = #{itdId,jdbcType=INTEGER}
+  </update>
+</mapper>

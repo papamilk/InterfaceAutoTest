@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.common.CmtbAttachmentMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.common.CmtbAttachment" >
+    <id column="att_id" property="attId" jdbcType="BIGINT" />
+    <result column="att_original_name" property="attOriginalName" jdbcType="VARCHAR" />
+    <result column="att_actual_name" property="attActualName" jdbcType="VARCHAR" />
+    <result column="att_refer_moduleid" property="attReferModuleid" jdbcType="VARCHAR" />
+    <result column="att_refer_attributeid" property="attReferAttributeid" jdbcType="VARCHAR" />
+    <result column="att_refer_objectid" property="attReferObjectid" jdbcType="VARCHAR" />
+    <result column="att_store_path" property="attStorePath" jdbcType="VARCHAR" />
+    <result column="att_type" property="attType" jdbcType="VARCHAR" />
+    <result column="att_size" property="attSize" jdbcType="VARCHAR" />
+    <result column="att_createdate" property="attCreatedate" jdbcType="VARCHAR" />
+    <result column="att_createuser" property="attCreateuser" jdbcType="VARCHAR" />
+    <result column="att_updatedate" property="attUpdatedate" jdbcType="VARCHAR" />
+    <result column="att_updateuser" property="attUpdateuser" jdbcType="VARCHAR" />
+    <result column="att_status" property="attStatus" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="blk.interfacetesting.modle.common.CmtbAttachment" extends="BaseResultMap" >
+    <result column="att_remark" property="attRemark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <select id="getDataExcel" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from cmtb_attachment
+    order by att_id
+    desc LIMIT 1
+  </select>
+  <select id="getInterfaceExcel" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from cmtb_attachment
+    order by att_id
+    asc LIMIT 1
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    att_id, att_original_name, att_actual_name, att_refer_moduleid, att_refer_attributeid,
+    att_refer_objectid, att_store_path, att_type, att_size, att_createdate, att_createuser,
+    att_updatedate, att_updateuser, att_status
+  </sql>
+  <sql id="Blob_Column_List" >
+    att_remark
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="blk.interfacetesting.modle.common.CmtbAttachmentCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from cmtb_attachment
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.common.CmtbAttachmentCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cmtb_attachment
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from cmtb_attachment
+    where att_id = #{attId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from cmtb_attachment
+    where att_id = #{attId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.common.CmtbAttachmentCriteria" >
+    delete from cmtb_attachment
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.common.CmtbAttachment" useGeneratedKeys="true" keyProperty="attId">
+    insert into cmtb_attachment (att_id, att_original_name, att_actual_name,
+    att_refer_moduleid, att_refer_attributeid,
+    att_refer_objectid, att_store_path, att_type,
+    att_size, att_createdate, att_createuser,
+    att_updatedate, att_updateuser, att_status,
+    att_remark)
+    values (#{attId,jdbcType=BIGINT}, #{attOriginalName,jdbcType=VARCHAR}, #{attActualName,jdbcType=VARCHAR},
+    #{attReferModuleid,jdbcType=VARCHAR}, #{attReferAttributeid,jdbcType=VARCHAR},
+    #{attReferObjectid,jdbcType=VARCHAR}, #{attStorePath,jdbcType=VARCHAR}, #{attType,jdbcType=VARCHAR},
+    #{attSize,jdbcType=VARCHAR}, #{attCreatedate,jdbcType=VARCHAR}, #{attCreateuser,jdbcType=VARCHAR},
+    #{attUpdatedate,jdbcType=VARCHAR}, #{attUpdateuser,jdbcType=VARCHAR}, #{attStatus,jdbcType=VARCHAR},
+    #{attRemark,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.common.CmtbAttachment" >
+    insert into cmtb_attachment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="attId != null" >
+        att_id,
+      </if>
+      <if test="attOriginalName != null" >
+        att_original_name,
+      </if>
+      <if test="attActualName != null" >
+        att_actual_name,
+      </if>
+      <if test="attReferModuleid != null" >
+        att_refer_moduleid,
+      </if>
+      <if test="attReferAttributeid != null" >
+        att_refer_attributeid,
+      </if>
+      <if test="attReferObjectid != null" >
+        att_refer_objectid,
+      </if>
+      <if test="attStorePath != null" >
+        att_store_path,
+      </if>
+      <if test="attType != null" >
+        att_type,
+      </if>
+      <if test="attSize != null" >
+        att_size,
+      </if>
+      <if test="attCreatedate != null" >
+        att_createdate,
+      </if>
+      <if test="attCreateuser != null" >
+        att_createuser,
+      </if>
+      <if test="attUpdatedate != null" >
+        att_updatedate,
+      </if>
+      <if test="attUpdateuser != null" >
+        att_updateuser,
+      </if>
+      <if test="attStatus != null" >
+        att_status,
+      </if>
+      <if test="attRemark != null" >
+        att_remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="attId != null" >
+        #{attId,jdbcType=BIGINT},
+      </if>
+      <if test="attOriginalName != null" >
+        #{attOriginalName,jdbcType=VARCHAR},
+      </if>
+      <if test="attActualName != null" >
+        #{attActualName,jdbcType=VARCHAR},
+      </if>
+      <if test="attReferModuleid != null" >
+        #{attReferModuleid,jdbcType=VARCHAR},
+      </if>
+      <if test="attReferAttributeid != null" >
+        #{attReferAttributeid,jdbcType=VARCHAR},
+      </if>
+      <if test="attReferObjectid != null" >
+        #{attReferObjectid,jdbcType=VARCHAR},
+      </if>
+      <if test="attStorePath != null" >
+        #{attStorePath,jdbcType=VARCHAR},
+      </if>
+      <if test="attType != null" >
+        #{attType,jdbcType=VARCHAR},
+      </if>
+      <if test="attSize != null" >
+        #{attSize,jdbcType=VARCHAR},
+      </if>
+      <if test="attCreatedate != null" >
+        #{attCreatedate,jdbcType=VARCHAR},
+      </if>
+      <if test="attCreateuser != null" >
+        #{attCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="attUpdatedate != null" >
+        #{attUpdatedate,jdbcType=VARCHAR},
+      </if>
+      <if test="attUpdateuser != null" >
+        #{attUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="attStatus != null" >
+        #{attStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="attRemark != null" >
+        #{attRemark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.common.CmtbAttachmentCriteria" resultType="java.lang.Integer" >
+    select count(*) from cmtb_attachment
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update cmtb_attachment
+    <set >
+      <if test="record.attId != null" >
+        att_id = #{record.attId,jdbcType=BIGINT},
+      </if>
+      <if test="record.attOriginalName != null" >
+        att_original_name = #{record.attOriginalName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attActualName != null" >
+        att_actual_name = #{record.attActualName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attReferModuleid != null" >
+        att_refer_moduleid = #{record.attReferModuleid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attReferAttributeid != null" >
+        att_refer_attributeid = #{record.attReferAttributeid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attReferObjectid != null" >
+        att_refer_objectid = #{record.attReferObjectid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attStorePath != null" >
+        att_store_path = #{record.attStorePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attType != null" >
+        att_type = #{record.attType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attSize != null" >
+        att_size = #{record.attSize,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attCreatedate != null" >
+        att_createdate = #{record.attCreatedate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attCreateuser != null" >
+        att_createuser = #{record.attCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attUpdatedate != null" >
+        att_updatedate = #{record.attUpdatedate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attUpdateuser != null" >
+        att_updateuser = #{record.attUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attStatus != null" >
+        att_status = #{record.attStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attRemark != null" >
+        att_remark = #{record.attRemark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update cmtb_attachment
+    set att_id = #{record.attId,jdbcType=BIGINT},
+    att_original_name = #{record.attOriginalName,jdbcType=VARCHAR},
+    att_actual_name = #{record.attActualName,jdbcType=VARCHAR},
+    att_refer_moduleid = #{record.attReferModuleid,jdbcType=VARCHAR},
+    att_refer_attributeid = #{record.attReferAttributeid,jdbcType=VARCHAR},
+    att_refer_objectid = #{record.attReferObjectid,jdbcType=VARCHAR},
+    att_store_path = #{record.attStorePath,jdbcType=VARCHAR},
+    att_type = #{record.attType,jdbcType=VARCHAR},
+    att_size = #{record.attSize,jdbcType=VARCHAR},
+    att_createdate = #{record.attCreatedate,jdbcType=VARCHAR},
+    att_createuser = #{record.attCreateuser,jdbcType=VARCHAR},
+    att_updatedate = #{record.attUpdatedate,jdbcType=VARCHAR},
+    att_updateuser = #{record.attUpdateuser,jdbcType=VARCHAR},
+    att_status = #{record.attStatus,jdbcType=VARCHAR},
+    att_remark = #{record.attRemark,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update cmtb_attachment
+    set att_id = #{record.attId,jdbcType=BIGINT},
+    att_original_name = #{record.attOriginalName,jdbcType=VARCHAR},
+    att_actual_name = #{record.attActualName,jdbcType=VARCHAR},
+    att_refer_moduleid = #{record.attReferModuleid,jdbcType=VARCHAR},
+    att_refer_attributeid = #{record.attReferAttributeid,jdbcType=VARCHAR},
+    att_refer_objectid = #{record.attReferObjectid,jdbcType=VARCHAR},
+    att_store_path = #{record.attStorePath,jdbcType=VARCHAR},
+    att_type = #{record.attType,jdbcType=VARCHAR},
+    att_size = #{record.attSize,jdbcType=VARCHAR},
+    att_createdate = #{record.attCreatedate,jdbcType=VARCHAR},
+    att_createuser = #{record.attCreateuser,jdbcType=VARCHAR},
+    att_updatedate = #{record.attUpdatedate,jdbcType=VARCHAR},
+    att_updateuser = #{record.attUpdateuser,jdbcType=VARCHAR},
+    att_status = #{record.attStatus,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.common.CmtbAttachment" >
+    update cmtb_attachment
+    <set >
+      <if test="attOriginalName != null" >
+        att_original_name = #{attOriginalName,jdbcType=VARCHAR},
+      </if>
+      <if test="attActualName != null" >
+        att_actual_name = #{attActualName,jdbcType=VARCHAR},
+      </if>
+      <if test="attReferModuleid != null" >
+        att_refer_moduleid = #{attReferModuleid,jdbcType=VARCHAR},
+      </if>
+      <if test="attReferAttributeid != null" >
+        att_refer_attributeid = #{attReferAttributeid,jdbcType=VARCHAR},
+      </if>
+      <if test="attReferObjectid != null" >
+        att_refer_objectid = #{attReferObjectid,jdbcType=VARCHAR},
+      </if>
+      <if test="attStorePath != null" >
+        att_store_path = #{attStorePath,jdbcType=VARCHAR},
+      </if>
+      <if test="attType != null" >
+        att_type = #{attType,jdbcType=VARCHAR},
+      </if>
+      <if test="attSize != null" >
+        att_size = #{attSize,jdbcType=VARCHAR},
+      </if>
+      <if test="attCreatedate != null" >
+        att_createdate = #{attCreatedate,jdbcType=VARCHAR},
+      </if>
+      <if test="attCreateuser != null" >
+        att_createuser = #{attCreateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="attUpdatedate != null" >
+        att_updatedate = #{attUpdatedate,jdbcType=VARCHAR},
+      </if>
+      <if test="attUpdateuser != null" >
+        att_updateuser = #{attUpdateuser,jdbcType=VARCHAR},
+      </if>
+      <if test="attStatus != null" >
+        att_status = #{attStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="attRemark != null" >
+        att_remark = #{attRemark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where att_id = #{attId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="blk.interfacetesting.modle.common.CmtbAttachment" >
+    update cmtb_attachment
+    set att_original_name = #{attOriginalName,jdbcType=VARCHAR},
+    att_actual_name = #{attActualName,jdbcType=VARCHAR},
+    att_refer_moduleid = #{attReferModuleid,jdbcType=VARCHAR},
+    att_refer_attributeid = #{attReferAttributeid,jdbcType=VARCHAR},
+    att_refer_objectid = #{attReferObjectid,jdbcType=VARCHAR},
+    att_store_path = #{attStorePath,jdbcType=VARCHAR},
+    att_type = #{attType,jdbcType=VARCHAR},
+    att_size = #{attSize,jdbcType=VARCHAR},
+    att_createdate = #{attCreatedate,jdbcType=VARCHAR},
+    att_createuser = #{attCreateuser,jdbcType=VARCHAR},
+    att_updatedate = #{attUpdatedate,jdbcType=VARCHAR},
+    att_updateuser = #{attUpdateuser,jdbcType=VARCHAR},
+    att_status = #{attStatus,jdbcType=VARCHAR},
+    att_remark = #{attRemark,jdbcType=LONGVARCHAR}
+    where att_id = #{attId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.common.CmtbAttachment" >
+    update cmtb_attachment
+    set att_original_name = #{attOriginalName,jdbcType=VARCHAR},
+      att_actual_name = #{attActualName,jdbcType=VARCHAR},
+      att_refer_moduleid = #{attReferModuleid,jdbcType=VARCHAR},
+      att_refer_attributeid = #{attReferAttributeid,jdbcType=VARCHAR},
+      att_refer_objectid = #{attReferObjectid,jdbcType=VARCHAR},
+      att_store_path = #{attStorePath,jdbcType=VARCHAR},
+      att_type = #{attType,jdbcType=VARCHAR},
+      att_size = #{attSize,jdbcType=VARCHAR},
+      att_createdate = #{attCreatedate,jdbcType=VARCHAR},
+      att_createuser = #{attCreateuser,jdbcType=VARCHAR},
+      att_updatedate = #{attUpdatedate,jdbcType=VARCHAR},
+      att_updateuser = #{attUpdateuser,jdbcType=VARCHAR},
+      att_status = #{attStatus,jdbcType=VARCHAR}
+    where att_id = #{attId,jdbcType=BIGINT}
+  </update>
+</mapper>

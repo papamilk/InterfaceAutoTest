@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blk.interfacetesting.dao.data.MstbDynamicParamMapper" >
+  <resultMap id="BaseResultMap" type="blk.interfacetesting.modle.data.MstbDynamicParam" >
+    <id column="mdp_id" property="mdpId" jdbcType="INTEGER" />
+    <result column="iem_id" property="iemId" jdbcType="INTEGER" />
+    <result column="itd_id" property="itdId" jdbcType="INTEGER" />
+    <result column="mdp_name" property="mdpName" jdbcType="VARCHAR" />
+    <result column="mdp_type" property="mdpType" jdbcType="TINYINT" />
+    <result column="mdp_formula" property="mdpFormula" jdbcType="VARCHAR" />
+    <result column="mdp_description" property="mdpDescription" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="blk.interfacetesting.modle.data.MstbDynamicParam" extends="BaseResultMap" >
+    <result column="mdp_value" property="mdpValue" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <select id="getDynamicParamListByItdId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+        *
+    FROM
+        mstb_dynamic_param
+    WHERE
+        itd_id = #{itdId}
+  </select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    mdp_id, iem_id, itd_id, mdp_name, mdp_type, mdp_formula, mdp_description, create_time,
+    create_user, update_time, update_user, state
+  </sql>
+  <sql id="Blob_Column_List" >
+    mdp_value
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="blk.interfacetesting.modle.data.MstbDynamicParamCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mstb_dynamic_param
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="blk.interfacetesting.modle.data.MstbDynamicParamCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from mstb_dynamic_param
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="page != null" >
+      limit #{page.begin} , #{page.length}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mstb_dynamic_param
+    where mdp_id = #{mdpId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mstb_dynamic_param
+    where mdp_id = #{mdpId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="blk.interfacetesting.modle.data.MstbDynamicParamCriteria" >
+    delete from mstb_dynamic_param
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="blk.interfacetesting.modle.data.MstbDynamicParam" >
+    insert into mstb_dynamic_param (mdp_id, iem_id, itd_id,
+    mdp_name, mdp_type, mdp_formula,
+    mdp_description, create_time, create_user,
+    update_time, update_user, state,
+    mdp_value)
+    values (#{mdpId,jdbcType=INTEGER}, #{iemId,jdbcType=INTEGER}, #{itdId,jdbcType=INTEGER},
+    #{mdpName,jdbcType=VARCHAR}, #{mdpType,jdbcType=TINYINT}, #{mdpFormula,jdbcType=VARCHAR},
+    #{mdpDescription,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR},
+    #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{state,jdbcType=TINYINT},
+    #{mdpValue,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="blk.interfacetesting.modle.data.MstbDynamicParam" >
+    insert into mstb_dynamic_param
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mdpId != null" >
+        mdp_id,
+      </if>
+      <if test="iemId != null" >
+        iem_id,
+      </if>
+      <if test="itdId != null" >
+        itd_id,
+      </if>
+      <if test="mdpName != null" >
+        mdp_name,
+      </if>
+      <if test="mdpType != null" >
+        mdp_type,
+      </if>
+      <if test="mdpFormula != null" >
+        mdp_formula,
+      </if>
+      <if test="mdpDescription != null" >
+        mdp_description,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="mdpValue != null" >
+        mdp_value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mdpId != null" >
+        #{mdpId,jdbcType=INTEGER},
+      </if>
+      <if test="iemId != null" >
+        #{iemId,jdbcType=INTEGER},
+      </if>
+      <if test="itdId != null" >
+        #{itdId,jdbcType=INTEGER},
+      </if>
+      <if test="mdpName != null" >
+        #{mdpName,jdbcType=VARCHAR},
+      </if>
+      <if test="mdpType != null" >
+        #{mdpType,jdbcType=TINYINT},
+      </if>
+      <if test="mdpFormula != null" >
+        #{mdpFormula,jdbcType=VARCHAR},
+      </if>
+      <if test="mdpDescription != null" >
+        #{mdpDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="mdpValue != null" >
+        #{mdpValue,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="blk.interfacetesting.modle.data.MstbDynamicParamCriteria" resultType="java.lang.Integer" >
+    select count(*) from mstb_dynamic_param
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update mstb_dynamic_param
+    <set >
+      <if test="record.mdpId != null" >
+        mdp_id = #{record.mdpId,jdbcType=INTEGER},
+      </if>
+      <if test="record.iemId != null" >
+        iem_id = #{record.iemId,jdbcType=INTEGER},
+      </if>
+      <if test="record.itdId != null" >
+        itd_id = #{record.itdId,jdbcType=INTEGER},
+      </if>
+      <if test="record.mdpName != null" >
+        mdp_name = #{record.mdpName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mdpType != null" >
+        mdp_type = #{record.mdpType,jdbcType=TINYINT},
+      </if>
+      <if test="record.mdpFormula != null" >
+        mdp_formula = #{record.mdpFormula,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mdpDescription != null" >
+        mdp_description = #{record.mdpDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUser != null" >
+        create_user = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateUser != null" >
+        update_user = #{record.updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=TINYINT},
+      </if>
+      <if test="record.mdpValue != null" >
+        mdp_value = #{record.mdpValue,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update mstb_dynamic_param
+    set mdp_id = #{record.mdpId,jdbcType=INTEGER},
+    iem_id = #{record.iemId,jdbcType=INTEGER},
+    itd_id = #{record.itdId,jdbcType=INTEGER},
+    mdp_name = #{record.mdpName,jdbcType=VARCHAR},
+    mdp_type = #{record.mdpType,jdbcType=TINYINT},
+    mdp_formula = #{record.mdpFormula,jdbcType=VARCHAR},
+    mdp_description = #{record.mdpDescription,jdbcType=VARCHAR},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    create_user = #{record.createUser,jdbcType=VARCHAR},
+    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+    update_user = #{record.updateUser,jdbcType=VARCHAR},
+    state = #{record.state,jdbcType=TINYINT},
+    mdp_value = #{record.mdpValue,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update mstb_dynamic_param
+    set mdp_id = #{record.mdpId,jdbcType=INTEGER},
+    iem_id = #{record.iemId,jdbcType=INTEGER},
+    itd_id = #{record.itdId,jdbcType=INTEGER},
+    mdp_name = #{record.mdpName,jdbcType=VARCHAR},
+    mdp_type = #{record.mdpType,jdbcType=TINYINT},
+    mdp_formula = #{record.mdpFormula,jdbcType=VARCHAR},
+    mdp_description = #{record.mdpDescription,jdbcType=VARCHAR},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    create_user = #{record.createUser,jdbcType=VARCHAR},
+    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+    update_user = #{record.updateUser,jdbcType=VARCHAR},
+    state = #{record.state,jdbcType=TINYINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="blk.interfacetesting.modle.data.MstbDynamicParam" >
+    update mstb_dynamic_param
+    <set >
+      <if test="iemId != null" >
+        iem_id = #{iemId,jdbcType=INTEGER},
+      </if>
+      <if test="itdId != null" >
+        itd_id = #{itdId,jdbcType=INTEGER},
+      </if>
+      <if test="mdpName != null" >
+        mdp_name = #{mdpName,jdbcType=VARCHAR},
+      </if>
+      <if test="mdpType != null" >
+        mdp_type = #{mdpType,jdbcType=TINYINT},
+      </if>
+      <if test="mdpFormula != null" >
+        mdp_formula = #{mdpFormula,jdbcType=VARCHAR},
+      </if>
+      <if test="mdpDescription != null" >
+        mdp_description = #{mdpDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=TINYINT},
+      </if>
+      <if test="mdpValue != null" >
+        mdp_value = #{mdpValue,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where mdp_id = #{mdpId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="blk.interfacetesting.modle.data.MstbDynamicParam" >
+    update mstb_dynamic_param
+    set iem_id = #{iemId,jdbcType=INTEGER},
+    itd_id = #{itdId,jdbcType=INTEGER},
+    mdp_name = #{mdpName,jdbcType=VARCHAR},
+    mdp_type = #{mdpType,jdbcType=TINYINT},
+    mdp_formula = #{mdpFormula,jdbcType=VARCHAR},
+    mdp_description = #{mdpDescription,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    create_user = #{createUser,jdbcType=VARCHAR},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    update_user = #{updateUser,jdbcType=VARCHAR},
+    state = #{state,jdbcType=TINYINT},
+    mdp_value = #{mdpValue,jdbcType=LONGVARCHAR}
+    where mdp_id = #{mdpId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="blk.interfacetesting.modle.data.MstbDynamicParam" >
+    update mstb_dynamic_param
+    set iem_id = #{iemId,jdbcType=INTEGER},
+      itd_id = #{itdId,jdbcType=INTEGER},
+      mdp_name = #{mdpName,jdbcType=VARCHAR},
+      mdp_type = #{mdpType,jdbcType=TINYINT},
+      mdp_formula = #{mdpFormula,jdbcType=VARCHAR},
+      mdp_description = #{mdpDescription,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      state = #{state,jdbcType=TINYINT}
+    where mdp_id = #{mdpId,jdbcType=INTEGER}
+  </update>
+</mapper>
